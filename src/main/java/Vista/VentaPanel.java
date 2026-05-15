@@ -23,6 +23,7 @@ public class VentaPanel extends JPanel {
 	private JTextField txtDescuento;
 	private JLabel lblCambio;
 	private JLabel lblRecibido;
+	private JLabel lblImagenProducto;
 	private JComboBox<String> cmbMetodo;
 	private boolean actualizando = false;
 
@@ -138,6 +139,13 @@ public class VentaPanel extends JPanel {
 		lblResumen.setForeground(new Color(129, 140, 248));
 		lblResumen.setBounds(16, 16, 218, 14);
 		panelCobro.add(lblResumen);
+		
+		lblImagenProducto = new JLabel("NO IMAGEN", SwingConstants.CENTER);
+		lblImagenProducto.setFont(Estilos.FUENTE_BOLD);
+		lblImagenProducto.setForeground(new Color(63, 63, 70));
+		lblImagenProducto.setBorder(BorderFactory.createLineBorder(new Color(63, 63, 70)));
+		lblImagenProducto.setBounds(16, 290, 218, 170); // ubicado abajo del cambio
+		panelCobro.add(lblImagenProducto);;
 
 		lblTotal = new JLabel("$0.00");
 		lblTotal.setFont(new Font("SansSerif", Font.BOLD, 38));
@@ -267,10 +275,11 @@ public class VentaPanel extends JPanel {
 			btn.setMaximumSize(new Dimension(Integer.MAX_VALUE, altoFila));
 			btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			btn.addActionListener(e -> {
-				ctrl.agregarAlCarrito(p);
-				txtBusqueda.setText("");
-				sugerenciasPanel.removeAll();
-				sugerenciasPanel.setVisible(false);
+			    ctrl.agregarAlCarrito(p);
+			    mostrarImagen(p.getImagenRuta());
+			    txtBusqueda.setText("");
+			    sugerenciasPanel.removeAll();
+			    sugerenciasPanel.setVisible(false);
 			});
 			sugerenciasPanel.add(btn);
 		}
@@ -279,6 +288,8 @@ public class VentaPanel extends JPanel {
 		sugerenciasPanel.setVisible(!res.isEmpty());
 		sugerenciasPanel.revalidate();
 		sugerenciasPanel.repaint();
+		
+		
 	}
 
 	private void actualizarCambio() {
@@ -333,6 +344,8 @@ public class VentaPanel extends JPanel {
 		sugerenciasPanel.setVisible(false);
 		cmbMetodo.setSelectedIndex(0);
 		actualizarVisibilidadEfectivo();
+		lblImagenProducto.setIcon(null);
+	    lblImagenProducto.setText("");
 	}
 
 	public static class BtnRenderer extends JButton implements TableCellRenderer {
@@ -355,6 +368,23 @@ public class VentaPanel extends JPanel {
 		}
 	}
 
+	private void mostrarImagen(String ruta) {
+	    if (ruta == null || ruta.isEmpty()) {
+	        lblImagenProducto.setIcon(null);
+	        lblImagenProducto.setText("SIN FOTO");
+	        return;
+	    }
+	    try {
+	        ImageIcon iconoOriginal = new ImageIcon(ruta);
+	        Image img = iconoOriginal.getImage();
+	        Image nuevaImg = img.getScaledInstance(218, 170, Image.SCALE_SMOOTH);
+	        lblImagenProducto.setIcon(new ImageIcon(nuevaImg));
+	        lblImagenProducto.setText("");
+	    } catch (Exception e) {
+	        lblImagenProducto.setText("ERROR CARGA");
+	    }
+	}
+	
 	public static class BtnEditor extends DefaultCellEditor {
 		private final JButton btn = new JButton("Quitar");
 		private String id;
@@ -374,6 +404,8 @@ public class VentaPanel extends JPanel {
 				accion.accept(id);
 			});
 		}
+		
+
 
 		@Override
 		public Component getTableCellEditorComponent(JTable t, Object value, boolean isSelected, int row, int col) {
@@ -385,5 +417,7 @@ public class VentaPanel extends JPanel {
 		public Object getCellEditorValue() {
 			return id;
 		}
+		
+		
 	}
 }

@@ -21,18 +21,22 @@
 
     <dependencies>
 
-        <!-- ✅ Driver MySQL -->
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
             <version>8.3.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <version>12.6.1.jre11</version>
+        </dependency>
+
     </dependencies>
 
     <build>
         <plugins>
-            <!-- Plugin para generar JAR ejecutable con dependencias incluidas -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -40,7 +44,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>main.Main</mainClass>
+                            <mainClass>Main.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

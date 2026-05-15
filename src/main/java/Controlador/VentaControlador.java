@@ -24,7 +24,7 @@ public class VentaControlador {
 	public List<Producto> buscarProductos(String texto) {
 		if (texto == null || texto.isBlank())
 			return new ArrayList<>();
-		return app.getProductoDAO().buscar(texto);
+		return app.getProductoBD().buscar(texto);
 	}
 
 	public void agregarAlCarrito(Producto p) {

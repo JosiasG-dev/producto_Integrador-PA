@@ -3,11 +3,12 @@ package Vista;
 import javax.swing.*;
 
 import Controlador.*;
+import Modelo.ConfiguracionTienda;
 import Modelo.Usuario;
 
 import java.awt.*;
 
-public class VentanaPrincipal {
+public class VentanaPrincipal extends JFrame {
 
 	private final AppControlador app;
 	private final VentaControlador ventaCtrl;
@@ -19,6 +20,7 @@ public class VentanaPrincipal {
 	private JFrame frame;
 	private JPanel contenido;
 	private CardLayout cardLayout;
+	private JLabel labelNombreTienda;
 
 	private VentaPanel ventaPanel;
 	private InventarioPanel inventarioPanel;
@@ -48,7 +50,7 @@ public class VentanaPrincipal {
 	}
 
 	private void construir() {
-		frame = new JFrame("CORPORATIVO POS — Sistema Punto de Venta");
+		frame = new JFrame("");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(1280, 800);
 		frame.setLocationRelativeTo(null);
@@ -87,6 +89,9 @@ public class VentanaPrincipal {
 
 		root.add(contenido, BorderLayout.CENTER);
 		frame.setContentPane(root);
+		
+		// al terminar de construir ponemos el titulo inicial
+		actualizarTitulo();
 	}
 
 	private JPanel construirSidebar() {
@@ -99,10 +104,12 @@ public class VentanaPrincipal {
 		JPanel logo = new JPanel(new FlowLayout(FlowLayout.LEFT, 16, 20));
 		logo.setBackground(Estilos.BG_OSCURO);
 		logo.setMaximumSize(new Dimension(Integer.MAX_VALUE, 80));
-		JLabel tienda = new JLabel("🏪 " + app.getConfig().getNombre());
-		tienda.setFont(Estilos.FUENTE_BOLD);
-		tienda.setForeground(Color.WHITE);
-		logo.add(tienda);
+		
+		// usamos el nombre que viene de la base de datos de tamaulipas
+		labelNombreTienda = new JLabel("🏪 " + app.getConfig().getNombre());
+		labelNombreTienda.setFont(Estilos.FUENTE_BOLD);
+		labelNombreTienda.setForeground(Color.WHITE);
+		logo.add(labelNombreTienda);
 		sidebar.add(logo);
 
 		JSeparator sep = new JSeparator();
@@ -206,6 +213,18 @@ public class VentanaPrincipal {
 		case TAB_USUARIOS -> usuariosPanel.refrescar();
 		case TAB_REPORTES -> reportesPanel.refrescar();
 		}
+	}
+	
+	public void actualizarTitulo() {
+	    ConfiguracionTienda config = app.getConfig();
+
+	    if (labelNombreTienda != null) {
+	    	labelNombreTienda.setText("🏪 " + config.getNombre());
+	    }
+	    
+	    if (frame != null) {
+	    	frame.setTitle(config.getNombre() + " - Sistema de Punto de Venta");
+	    }
 	}
 
 	public void refrescarInventario() {

@@ -32,27 +32,27 @@ public class InventarioControlador {
 	}
 
 	public void guardarProducto(Producto p) {
-		Producto existente = app.getProductoDAO().buscarPorId(p.getId());
+		Producto existente = app.getProductoBD().buscarPorId(p.getId());
 		if (existente != null) {
-			app.getProductoDAO().actualizar(p);
+			app.getProductoBD().actualizar(p);
 		} else {
-			app.getProductoDAO().insertar(p);
+			app.getProductoBD().insertar(p);
 		}
 		if (panel != null)
 			panel.refrescar();
 	}
 
 	public void eliminarProducto(String id) {
-		app.getProductoDAO().eliminar(id);
+		app.getProductoBD().eliminar(id);
 		if (panel != null)
 			panel.refrescar();
 	}
 
 	public Producto buscarPorId(String id) {
-		return app.getProductoDAO().buscarPorId(id);
+		return app.getProductoBD().buscarPorId(id);
 	}
 
 	public String generarNuevoId() {
-		return app.getProductoDAO().generarNuevoId();
+		return app.getProductoBD().generarNuevoId();
 	}
 }

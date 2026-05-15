@@ -4,6 +4,10 @@ import javax.swing.*;
 import Controlador.InventarioControlador;
 import Modelo.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 public class ProductoDialog extends JDialog {
 
@@ -12,6 +16,7 @@ public class ProductoDialog extends JDialog {
 
 	private JTextField txtId, txtNombre, txtPrecio, txtStock, txtStockMin;
 	private JComboBox<String> cmbCategoria, cmbUnidad;
+	private String rutaImagen = "";
 
 	public ProductoDialog(Window parent, Producto p, InventarioControlador ctrl) {
 		super(parent, p == null ? "Nuevo Producto" : "Editar Producto", ModalityType.APPLICATION_MODAL);
@@ -23,7 +28,7 @@ public class ProductoDialog extends JDialog {
 	}
 
 	private void construir() {
-		setSize(480, 500);
+		setSize(480, 580); 
 		setLocationRelativeTo(getParent());
 		setResizable(false);
 
@@ -74,9 +79,38 @@ public class ProductoDialog extends JDialog {
 		cmbUnidad.setBounds(x + 210, 332, 214, fh);
 		panel.add(cmbUnidad);
 
+		// SECCION DE IMAGEN (CORREGIDA SIN DUPLICADOS)
+		panel.add(lbl("Imagen del Producto", x, 380));
+		JButton btnImagen = new JButton("Seleccionar Imagen");
+		btnImagen.setFont(Estilos.FUENTE_XS);
+		btnImagen.setBounds(x, 396, 200, 30);
+		btnImagen.addActionListener(e -> {
+			JFileChooser selector = new JFileChooser();
+			selector.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Imagenes", "jpg", "png", "jpeg"));
+			int r = selector.showOpenDialog(this);
+			
+			if (r == JFileChooser.APPROVE_OPTION) {
+				File archivoOrigen = selector.getSelectedFile();
+				File carpetaDestino = new File("images");
+				if (!carpetaDestino.exists()) {
+					carpetaDestino.mkdir();
+				}
+				File archivoDestino = new File(carpetaDestino, archivoOrigen.getName());
+				try {
+					Files.copy(archivoOrigen.toPath(), archivoDestino.toPath(), StandardCopyOption.REPLACE_EXISTING);
+					this.rutaImagen = "images/" + archivoOrigen.getName();
+					btnImagen.setText("✅ " + archivoOrigen.getName());
+				} catch (IOException ex) {
+					ex.printStackTrace();
+					JOptionPane.showMessageDialog(this, "Error al copiar la imagen");
+				}
+			}
+		});
+		panel.add(btnImagen);
+
 		if (producto != null) {
 			JButton btnEliminar = Estilos.botonPeligro("Eliminar");
-			btnEliminar.setBounds(28, 410, 100, 38);
+			btnEliminar.setBounds(28, 480, 100, 38);
 			btnEliminar.addActionListener(e -> {
 				int ok = JOptionPane.showConfirmDialog(this, "Eliminar producto " + producto.getNombre() + "?",
 						"Confirmar", JOptionPane.YES_NO_OPTION);
@@ -89,12 +123,12 @@ public class ProductoDialog extends JDialog {
 		}
 
 		JButton btnCancelar = Estilos.botonSecundario("Cancelar");
-		btnCancelar.setBounds(240, 410, 100, 38);
+		btnCancelar.setBounds(240, 480, 100, 38);
 		btnCancelar.addActionListener(e -> dispose());
 		panel.add(btnCancelar);
 
 		JButton btnGuardar = Estilos.botonPrimario("Guardar");
-		btnGuardar.setBounds(350, 410, 102, 38);
+		btnGuardar.setBounds(350, 480, 102, 38);
 		btnGuardar.addActionListener(e -> guardar());
 		panel.add(btnGuardar);
 
@@ -109,6 +143,7 @@ public class ProductoDialog extends JDialog {
 		txtStockMin.setText(String.valueOf((int) p.getStockMinimo()));
 		cmbCategoria.setSelectedItem(p.getCategoria());
 		cmbUnidad.setSelectedItem(p.getUnidad());
+		this.rutaImagen = p.getImagenRuta();
 	}
 
 	private void guardar() {
@@ -126,18 +161,13 @@ public class ProductoDialog extends JDialog {
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			if (precio < 0 || stock < 0 || stockMin < 0) {
-				JOptionPane.showMessageDialog(this, "Los valores numericos no pueden ser negativos", "Error",
-						JOptionPane.ERROR_MESSAGE);
-				return;
-			}
 
-			Producto p = new Producto(id, nom, precio, stock, cat, unidad);
+			Producto p = new Producto(id, nom, precio, stock, cat, unidad, rutaImagen);
 			p.setStockMinimo(stockMin);
 			ctrl.guardarProducto(p);
 			dispose();
 		} catch (NumberFormatException ex) {
-			JOptionPane.showMessageDialog(this, "Precio, Stock y Stock Minimo deben ser numeros validos", "Error",
+			JOptionPane.showMessageDialog(this, "Datos numéricos inválidos", "Error",
 					JOptionPane.ERROR_MESSAGE);
 		}
 	}

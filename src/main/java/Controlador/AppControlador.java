@@ -10,15 +10,16 @@ import java.util.List;
 
 public class AppControlador {
 
-	private final UsuarioBD usuarioDAO = new UsuarioBD();
-	private final ProductoBD productoDAO = new ProductoBD();
-	private final VentaBD ventaDAO = new VentaBD();
-	private final MovimientoBD movimientoDAO = new MovimientoBD();
-	private final ProveedorBD proveedorDAO = new ProveedorBD();
-	private final OrdenCompraBD ordenDAO = new OrdenCompraBD();
-	private final CuentaPorPagarBD cuentaDAO = new CuentaPorPagarBD();
-	private final DevolucionBD devolucionDAO = new DevolucionBD();
-
+	private final UsuarioBD usuarioBD = new UsuarioBD();
+	private final ProductoBD productoBD = new ProductoBD();
+	private final VentaBD ventaBD = new VentaBD();
+	private final MovimientoBD movimientoBD = new MovimientoBD();
+	private final ProveedorBD proveedorBD = new ProveedorBD();
+	private final OrdenCompraBD ordenBD = new OrdenCompraBD();
+	private final CuentaPorPagarBD cuentaBD = new CuentaPorPagarBD();
+	private final DevolucionBD devolucionBD = new DevolucionBD();
+	private final ConfiguracionBD configBD = new ConfiguracionBD();
+	
 	private double montoCaja = 0;
 	private boolean cajaAbierta = false;
 	private Usuario usuarioActivo;
@@ -36,13 +37,12 @@ public class AppControlador {
 	private UsuarioControlador usuarioCtrl;
 
 	public void iniciar() {
-		if (Conexion.getConexion() == null) {
-			JOptionPane.showMessageDialog(null,
-					"No se pudo conectar a MySQL.\n\nVerifica en Conexion/Conexion.java:\n"
-							+ "  HOST, PORT, USER y PASSWORD\n  Que MySQL este corriendo\n  Que la base exista",
-					"Error de Conexion", JOptionPane.ERROR_MESSAGE);
-			System.exit(1);
+		// cargamos la configuracion guardada de abarrotes lupe desde la base de datos
+		ConfiguracionTienda guardada = configBD.obtener();
+		if (guardada != null) {
+			this.config = guardada;
 		}
+		
 		loginVista = new LoginVista(this);
 		loginVista.mostrar();
 	}
@@ -70,106 +70,169 @@ public class AppControlador {
 	}
 
 	public Usuario autenticar(String username, String password) {
-		return usuarioDAO.autenticar(username, password);
+		return usuarioBD.autenticar(username, password);
 	}
 
 	public void registrarVenta(Venta venta) {
-		ventaDAO.insertar(venta);
-		movimientoDAO.insertar(new Movimiento(Movimiento.Tipo.VENTA, "Venta #" + venta.getId(), venta.getTotal(),
-				new Date(), usuarioActivo.getNombre()));
-		if (ventanaPrincipal != null) {
-			ventanaPrincipal.refrescarInventario();
-			ventanaPrincipal.refrescarCaja();
-		}
+	    ventaBD.insertar(venta);
+	    
+	    // solo sumamos al dinero fisico si es efectivo
+	    if (venta.getMetodoPago().equalsIgnoreCase("Efectivo")) {
+	        this.montoCaja += venta.getTotal();
+	    }
+	    
+	    movimientoBD.insertar(new Movimiento(Movimiento.Tipo.VENTA, 
+	        "venta #" + venta.getId() + " (" + venta.getMetodoPago() + ")", 
+	        venta.getTotal(), new java.util.Date(), usuarioActivo.getNombre()));
+
+	    if (ventanaPrincipal != null) {
+	        ventanaPrincipal.refrescarCaja();
+	        ventanaPrincipal.refrescarInventario();
+	    }
 	}
 
 	public void registrarDevolucion(Devolucion d) {
-		devolucionDAO.insertar(d);
-		Producto p = productoDAO.buscarPorId(d.getProducto().getId());
+		devolucionBD.insertar(d);
+		Producto p = productoBD.buscarPorId(d.getProducto().getId());
 		if (p != null)
-			productoDAO.actualizarStock(p.getId(), p.getStock() + d.getCantidad());
-		movimientoDAO.insertar(new Movimiento(Movimiento.Tipo.RETIRO, "Devolucion Venta #" + d.getVentaId(),
+			productoBD.actualizarStock(p.getId(), p.getStock() + d.getCantidad());
+		movimientoBD.insertar(new Movimiento(Movimiento.Tipo.RETIRO, "Devolucion Venta #" + d.getVentaId(),
 				d.getMontoDevuelto(), new Date(), usuarioActivo.getNombre()));
 		if (ventanaPrincipal != null)
 			ventanaPrincipal.refrescarInventario();
 	}
 
+	public void registrarVentaSimple(double monto) {
+	    this.montoCaja += monto;
+	    if (ventanaPrincipal != null) {
+	        ventanaPrincipal.refrescarCaja();
+	    }
+	}
+	
 	public void registrarRetiro(String concepto, double monto) {
-		movimientoDAO.insertar(
-				new Movimiento(Movimiento.Tipo.RETIRO, concepto, monto, new Date(), usuarioActivo.getNombre()));
-		if (ventanaPrincipal != null)
-			ventanaPrincipal.refrescarCaja();
+	    this.montoCaja -= monto;
+	    movimientoBD.insertar(new Movimiento(Movimiento.Tipo.RETIRO, concepto, monto, 
+	            new java.util.Date(), usuarioActivo.getNombre()));
+	    if (ventanaPrincipal != null) {
+	        ventanaPrincipal.refrescarCaja();
+	    }
 	}
 
 	public void abrirCaja(double fondo) {
-		this.montoCaja = fondo;
-		this.cajaAbierta = true;
-		movimientoDAO.insertar(new Movimiento(Movimiento.Tipo.FONDO_INICIAL, "Apertura de caja", fondo, new Date(),
-				usuarioActivo.getNombre()));
+	    this.montoCaja = fondo;
+	    this.cajaAbierta = true;
+	    
+	    movimientoBD.insertar(new Movimiento(Movimiento.Tipo.VENTA, "apertura de caja", fondo, 
+	            new java.util.Date(), usuarioActivo.getNombre()));
+	            
+	    if (ventanaPrincipal != null) {
+	        ventanaPrincipal.refrescarCaja();
+	    }
+	}
+
+	public void guardarConfiguracion(ConfiguracionTienda nuevaConfig) {
+	    this.config = nuevaConfig;
+	    
+	    configBD.actualizar(nuevaConfig); 
+	    
+	    if (ventanaPrincipal != null) {
+	        ventanaPrincipal.actualizarTitulo();
+	    }
+	}
+	
+	public void reiniciarSistemaCompleto() {
+	    try {
+	        String[] tablas = { "devoluciones", "cuentas_por_pagar", "ordenes_compra", "movimientos", "ventas" };
+	        
+	        try (java.sql.Connection c = ConexionBD.Conexion.getConexion(); 
+	             java.sql.Statement st = c.createStatement()) {
+	            
+	            st.executeUpdate("SET FOREIGN_KEY_CHECKS = 0");
+	            
+	            for (String tabla : tablas) {
+	                st.executeUpdate("TRUNCATE TABLE " + tabla);
+	            }
+	            
+	            st.executeUpdate("SET FOREIGN_KEY_CHECKS = 1");
+	        }
+	        
+	        this.montoCaja = 0;
+	        this.cajaAbierta = false;
+	        
+	        if (ventanaPrincipal != null) {
+	            ventanaPrincipal.refrescarCaja();
+	            this.onCerrarSesion(); 
+	        }
+	        
+	        JOptionPane.showMessageDialog(null, "sistema reiniciado con exito");
+	        
+	    } catch (Exception e) {
+	        JOptionPane.showMessageDialog(null, "error al reiniciar: " + e.getMessage());
+	    }
 	}
 
 	public List<Usuario> getUsuarios() {
-		return usuarioDAO.obtenerTodos();
+		return usuarioBD.obtenerTodos();
 	}
 
 	public List<Producto> getProductos() {
-		return productoDAO.obtenerTodos();
+		return productoBD.obtenerTodos();
 	}
 
 	public List<Venta> getVentas() {
-		return ventaDAO.obtenerTodas();
+		return ventaBD.obtenerTodas();
 	}
 
 	public List<Movimiento> getMovimientos() {
-		return movimientoDAO.obtenerDelDia();
+		return movimientoBD.obtenerDelDia();
 	}
 
 	public List<Proveedor> getProveedores() {
-		return proveedorDAO.obtenerTodos();
+		return proveedorBD.obtenerTodos();
 	}
 
 	public List<OrdenCompra> getOrdenes() {
-		return ordenDAO.obtenerTodas();
+		return ordenBD.obtenerTodas();
 	}
 
 	public List<CuentaPorPagar> getCuentas() {
-		return cuentaDAO.obtenerActivas();
+		return cuentaBD.obtenerActivas();
 	}
 
 	public List<Devolucion> getDevoluciones() {
-		return devolucionDAO.obtenerTodas();
+		return devolucionBD.obtenerTodas();
 	}
 
-	public UsuarioBD getUsuarioDAO() {
-		return usuarioDAO;
+	public UsuarioBD getUsuarioBD() {
+		return usuarioBD;
 	}
 
-	public ProductoBD getProductoDAO() {
-		return productoDAO;
+	public ProductoBD getProductoBD() {
+		return productoBD;
 	}
 
-	public VentaBD getVentaDAO() {
-		return ventaDAO;
+	public VentaBD getVentaBD() {
+		return ventaBD;
 	}
 
-	public MovimientoBD getMovimientoDAO() {
-		return movimientoDAO;
+	public MovimientoBD getMovimientoBD() {
+		return movimientoBD;
 	}
 
-	public ProveedorBD getProveedorDAO() {
-		return proveedorDAO;
+	public ProveedorBD getProveedorBD() {
+		return proveedorBD;
 	}
 
-	public OrdenCompraBD getOrdenDAO() {
-		return ordenDAO;
+	public OrdenCompraBD getOrdenBD() {
+		return ordenBD;
 	}
 
-	public CuentaPorPagarBD getCuentaDAO() {
-		return cuentaDAO;
+	public CuentaPorPagarBD getCuentaBD() {
+		return cuentaBD;
 	}
 
-	public DevolucionBD getDevolucionDAO() {
-		return devolucionDAO;
+	public DevolucionBD getDevolucionBD() {
+		return devolucionBD;
 	}
 
 	public ConfiguracionTienda getConfig() {

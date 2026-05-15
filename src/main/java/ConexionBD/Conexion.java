@@ -4,38 +4,71 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-
 public class Conexion {
 
-    private static final String HOST     = "localhost";
-    private static final String PORT     = "3306";
-    private static final String DATABASE = "corporativo_pos";
-    private static final String USER     = "root";
-    private static final String PASSWORD = "2306"; 
+    public enum TipoMotor { MYSQL, SQLSERVER }
+    public enum TipoAutenticacion { CREDENCIALES, WINDOWS }
 
-    private static final String URL =
-        "jdbc:mysql://" + HOST + ":" + PORT + "/" + DATABASE
-        + "?useSSL=false"
-        + "&serverTimezone=America/Mexico_City"
-        + "&useUnicode=true"
-        + "&characterEncoding=UTF-8"
-        + "&allowPublicKeyRetrieval=true";
+    private static TipoMotor motorActual           = TipoMotor.MYSQL;
+    private static TipoAutenticacion autenticacion = TipoAutenticacion.CREDENCIALES;
+
+    private static String host            = "localhost";
+    private static String puertoInstancia = "3306";
+    private static String baseDatos       = "corporativo_pos";
+    private static String usuario         = "root";
+    private static String contrasena      = "2306";
 
     private static Connection instancia = null;
+
+    public static TipoMotor getMotor() {
+        return motorActual;
+    }
+
+    public static void configurar(TipoMotor motor, TipoAutenticacion auth,
+                                  String h, String pi, String bd, String u, String pass) {
+        motorActual      = motor;
+        autenticacion    = auth;
+        host             = h;
+        puertoInstancia  = pi;
+        baseDatos        = bd;
+        usuario          = u;
+        contrasena       = pass;
+        instancia        = null;
+    }
 
     public static Connection getConexion() {
         try {
             if (instancia == null || instancia.isClosed()) {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-                instancia = DriverManager.getConnection(URL, USER, PASSWORD);
-                System.out.println("Conexion con MySQL establecida");
+                if (motorActual == TipoMotor.MYSQL) {
+                    Class.forName("com.mysql.cj.jdbc.Driver");
+                    String url = "jdbc:mysql://" + host + ":" + puertoInstancia + "/" + baseDatos
+                            + "?useSSL=false&serverTimezone=America/Mexico_City"
+                            + "&useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true";
+                    instancia = DriverManager.getConnection(url, usuario, contrasena);
+                    System.out.println("Conexion con MySQL establecida");
+                } else {
+                    Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+                    String url;
+                    if (autenticacion == TipoAutenticacion.WINDOWS) {
+                        url = "jdbc:sqlserver://" + host + ":" + puertoInstancia
+                                + ";databaseName=" + baseDatos
+                                + ";integratedSecurity=true"
+                                + ";encrypt=false;trustServerCertificate=true";
+                        instancia = DriverManager.getConnection(url);
+                    } else {
+                        url = "jdbc:sqlserver://" + host + ":" + puertoInstancia
+                                + ";databaseName=" + baseDatos
+                                + ";encrypt=false;trustServerCertificate=true";
+                        instancia = DriverManager.getConnection(url, usuario, contrasena);
+                    }
+                    System.out.println("Conexion con SQL Server establecida");
+                }
             }
         } catch (ClassNotFoundException e) {
-            System.err.println("Driver MySQL no encontrado");
+            System.err.println("Driver no encontrado: " + e.getMessage());
             e.printStackTrace();
         } catch (SQLException e) {
-            System.err.println("Error de conexion a MySQL: " + e.getMessage());
-            System.err.println("   Verifica HOST, PORT, USER y PASSWORD en Conexion.java");
+            System.err.println("Error de conexion: " + e.getMessage());
             e.printStackTrace();
         }
         return instancia;
@@ -45,7 +78,7 @@ public class Conexion {
         try {
             if (instancia != null && !instancia.isClosed()) {
                 instancia.close();
-                System.out.println("Conexion con MySQL cerrada");
+                System.out.println("Conexion cerrada");
             }
         } catch (SQLException e) {
             e.printStackTrace();

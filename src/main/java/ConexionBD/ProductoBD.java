@@ -48,7 +48,7 @@ public class ProductoBD {
 	}
 
 	public boolean insertar(Producto p) {
-		String sql = "INSERT INTO productos (id, nombre, precio, stock, stock_minimo, categoria, unidad) VALUES (?,?,?,?,?,?,?)";
+		String sql = "INSERT INTO productos (id, nombre, precio, stock, stock_minimo, categoria, unidad, imagen_ruta) VALUES (?,?,?,?,?,?,?,?)";
 		try (PreparedStatement ps = Conexion.getConexion().prepareStatement(sql)) {
 			ps.setString(1, p.getId());
 			ps.setString(2, p.getNombre());
@@ -57,6 +57,7 @@ public class ProductoBD {
 			ps.setDouble(5, p.getStockMinimo());
 			ps.setString(6, p.getCategoria());
 			ps.setString(7, p.getUnidad());
+			ps.setString(8, p.getImagenRuta());
 			return ps.executeUpdate() > 0;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -65,7 +66,7 @@ public class ProductoBD {
 	}
 
 	public boolean actualizar(Producto p) {
-		String sql = "UPDATE productos SET nombre=?, precio=?, stock=?, stock_minimo=?, categoria=?, unidad=? WHERE id=?";
+		String sql = "UPDATE productos SET nombre=?, precio=?, stock=?, stock_minimo=?, categoria=?, unidad=?, imagen_ruta=? WHERE id=?";
 		try (PreparedStatement ps = Conexion.getConexion().prepareStatement(sql)) {
 			ps.setString(1, p.getNombre());
 			ps.setDouble(2, p.getPrecio());
@@ -73,7 +74,8 @@ public class ProductoBD {
 			ps.setDouble(4, p.getStockMinimo());
 			ps.setString(5, p.getCategoria());
 			ps.setString(6, p.getUnidad());
-			ps.setString(7, p.getId());
+			ps.setString(7, p.getImagenRuta());
+			ps.setString(8, p.getId());
 			return ps.executeUpdate() > 0;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -116,12 +118,8 @@ public class ProductoBD {
 
 	private Producto mapear(ResultSet rs) throws SQLException {
 		Producto p = new Producto(rs.getString("id"), rs.getString("nombre"), rs.getDouble("precio"),
-				rs.getDouble("stock"), rs.getString("categoria"), rs.getString("unidad"));
-		try {
-			p.setStockMinimo(rs.getDouble("stock_minimo"));
-		} catch (SQLException ignored) {
-			p.setStockMinimo(5);
-		}
+				rs.getDouble("stock"), rs.getString("categoria"), rs.getString("unidad"), rs.getString("imagen_ruta"));
+		p.setStockMinimo(rs.getDouble("stock_minimo"));
 		return p;
 	}
 }

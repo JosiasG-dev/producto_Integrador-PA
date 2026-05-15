@@ -20,7 +20,7 @@ public class LoginVista {
 	}
 
 	private void construir() {
-		frame = new JFrame("POS - Acceso al Sistema");
+		frame = new JFrame("");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(460, 520);
 		frame.setLocationRelativeTo(null);
@@ -67,7 +67,7 @@ public class LoginVista {
 		txtUsuario.setBounds(36, 150, 300, 44);
 		tarjeta.add(txtUsuario);
 
-		JLabel lblPass = new JLabel("CONTRASENA");
+		JLabel lblPass = new JLabel("CONTRASEÑA");
 		lblPass.setFont(Estilos.FUENTE_XS);
 		lblPass.setForeground(Estilos.TEXTO_TENUE);
 		lblPass.setBounds(36, 206, 300, 14);

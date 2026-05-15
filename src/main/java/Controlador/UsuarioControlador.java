@@ -21,9 +21,9 @@ public class UsuarioControlador {
 	public void guardarUsuario(Usuario u) {
 		boolean existe = app.getUsuarios().stream().anyMatch(x -> x.getId() == u.getId());
 		if (existe) {
-			app.getUsuarioDAO().actualizar(u);
+			app.getUsuarioBD().actualizar(u);
 		} else {
-			app.getUsuarioDAO().insertar(u);
+			app.getUsuarioBD().insertar(u);
 		}
 		if (panel != null)
 			panel.refrescar();
@@ -32,7 +32,7 @@ public class UsuarioControlador {
 	public void eliminarUsuario(int id) {
 		if (id == app.getUsuarioActivo().getId())
 			return;
-		app.getUsuarioDAO().eliminar(id);
+		app.getUsuarioBD().eliminar(id);
 		if (panel != null)
 			panel.refrescar();
 	}

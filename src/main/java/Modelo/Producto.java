@@ -8,8 +8,9 @@ public class Producto {
 	private double stockMinimo;
 	private String categoria;
 	private String unidad;
-
-	public Producto(String id, String nombre, double precio, double stock, String categoria, String unidad) {
+	private String imagenRuta; 
+	
+	public Producto(String id, String nombre, double precio, double stock, String categoria, String unidad, String imagenRuta) {
 		this.id = id;
 		this.nombre = nombre;
 		this.precio = precio;
@@ -17,6 +18,7 @@ public class Producto {
 		this.stockMinimo = 5;
 		this.categoria = categoria;
 		this.unidad = unidad;
+		this.imagenRuta = imagenRuta;
 	}
 
 	public String getId() {
@@ -73,6 +75,14 @@ public class Producto {
 
 	public void setUnidad(String unidad) {
 		this.unidad = unidad;
+	}
+
+	public String getImagenRuta() {
+		return imagenRuta;
+	}
+
+	public void setImagenRuta(String imagenRuta) {
+		this.imagenRuta = imagenRuta;
 	}
 
 	public boolean esPorPieza() {

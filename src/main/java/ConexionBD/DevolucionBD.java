@@ -30,14 +30,16 @@ public class DevolucionBD {
 
 	public List<Devolucion> obtenerPorVenta(int ventaId) {
 		List<Devolucion> lista = new ArrayList<>();
-		String sql = "SELECT d.*, p.nombre, p.precio, p.categoria, p.unidad "
+		String sql = "SELECT d.*, p.nombre, p.precio, p.categoria, p.unidad, p.imagen_ruta "
 				+ "FROM devoluciones d JOIN productos p ON d.producto_id = p.id WHERE d.venta_id = ?";
 		try (PreparedStatement ps = Conexion.getConexion().prepareStatement(sql)) {
 			ps.setInt(1, ventaId);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				Producto prod = new Producto(rs.getString("producto_id"), rs.getString("nombre"),
-						rs.getDouble("precio"), 0, rs.getString("categoria"), rs.getString("unidad"));
+						rs.getDouble("precio"), 0, rs.getString("categoria"), rs.getString("unidad"), 
+						rs.getString("imagen_ruta"));
+						
 				lista.add(new Devolucion(rs.getInt("id"), ventaId, prod, rs.getDouble("cantidad"),
 						rs.getString("motivo"), rs.getTimestamp("fecha"), rs.getString("cajero")));
 			}
@@ -49,12 +51,14 @@ public class DevolucionBD {
 
 	public List<Devolucion> obtenerTodas() {
 		List<Devolucion> lista = new ArrayList<>();
-		String sql = "SELECT d.*, p.nombre, p.precio, p.categoria, p.unidad "
+		String sql = "SELECT d.*, p.nombre, p.precio, p.categoria, p.unidad, p.imagen_ruta "
 				+ "FROM devoluciones d JOIN productos p ON d.producto_id = p.id ORDER BY d.fecha DESC";
 		try (Statement st = Conexion.getConexion().createStatement(); ResultSet rs = st.executeQuery(sql)) {
 			while (rs.next()) {
 				Producto prod = new Producto(rs.getString("producto_id"), rs.getString("nombre"),
-						rs.getDouble("precio"), 0, rs.getString("categoria"), rs.getString("unidad"));
+						rs.getDouble("precio"), 0, rs.getString("categoria"), rs.getString("unidad"), 
+						rs.getString("imagen_ruta"));
+						
 				lista.add(new Devolucion(rs.getInt("id"), rs.getInt("venta_id"), prod, rs.getDouble("cantidad"),
 						rs.getString("motivo"), rs.getTimestamp("fecha"), rs.getString("cajero")));
 			}

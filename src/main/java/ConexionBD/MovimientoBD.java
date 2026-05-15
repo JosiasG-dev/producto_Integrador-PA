@@ -3,8 +3,6 @@ package ConexionBD;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import ConexionBD.Conexion;
 import Modelo.Movimiento;
 
 public class MovimientoBD {
@@ -26,7 +24,12 @@ public class MovimientoBD {
 
 	public List<Movimiento> obtenerDelDia() {
 		List<Movimiento> lista = new ArrayList<>();
-		String sql = "SELECT * FROM movimientos WHERE DATE(fecha) = CURDATE() ORDER BY fecha DESC";
+		String sql;
+		if (Conexion.getMotor() == Conexion.TipoMotor.MYSQL) {
+			sql = "SELECT * FROM movimientos WHERE DATE(fecha) = CURDATE() ORDER BY fecha DESC";
+		} else {
+			sql = "SELECT * FROM movimientos WHERE CAST(fecha AS DATE) = CAST(GETDATE() AS DATE) ORDER BY fecha DESC";
+		}
 		try (Statement st = Conexion.getConexion().createStatement(); ResultSet rs = st.executeQuery(sql)) {
 			while (rs.next())
 				lista.add(mapear(rs));

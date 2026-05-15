@@ -106,6 +106,19 @@ CREATE TABLE IF NOT EXISTS devoluciones (
     FOREIGN KEY (producto_id) REFERENCES productos(id)
 );
 
+CREATE TABLE configuracion (
+    id INT PRIMARY KEY,
+    nombre_tienda VARCHAR(255),
+    sucursal VARCHAR(255),
+    rfc VARCHAR(20)
+);
+
+ALTER TABLE productos 
+ADD COLUMN imagen_ruta VARCHAR(500) DEFAULT '';
+
+INSERT INTO configuracion (id, nombre_tienda, sucursal, rfc) 
+VALUES (1, 'CORPORATIVO POS', 'Sucursal Principal - Centro', 'XAXX010101000');
+
 INSERT IGNORE INTO usuarios (username, password, rol, nombre, edad, sexo) VALUES
 ('admin',   'admin123', 'ADMINISTRADOR', 'Director General', 45, 'Masculino'),
 ('cajero1', 'caja123',  'CAJERO',        'Juan Jose',     28, 'Masculino');
