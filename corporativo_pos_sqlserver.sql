@@ -1,3 +1,5 @@
+
+
 IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'corporativo_pos')
     CREATE DATABASE corporativo_pos
         COLLATE Latin1_General_CI_AI;
@@ -5,7 +7,6 @@ GO
 
 USE corporativo_pos;
 GO
-
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='usuarios' AND xtype='U')
 CREATE TABLE usuarios (
     id       INT IDENTITY(1,1) PRIMARY KEY,
@@ -17,16 +18,16 @@ CREATE TABLE usuarios (
     sexo     VARCHAR(20)  NOT NULL DEFAULT 'Otro'
 );
 GO
-
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='productos' AND xtype='U')
 CREATE TABLE productos (
-    id           VARCHAR(20)    PRIMARY KEY,
-    nombre       VARCHAR(150)   NOT NULL,
-    precio       DECIMAL(10,2)  NOT NULL DEFAULT 0.00,
-    stock        DECIMAL(10,3)  NOT NULL DEFAULT 0.000,
-    stock_minimo FLOAT          NOT NULL DEFAULT 5,
-    categoria    VARCHAR(100)   NOT NULL,
-    unidad       VARCHAR(30)    NOT NULL DEFAULT 'Piezas'
+    id           VARCHAR(20)   PRIMARY KEY,
+    nombre       VARCHAR(150)  NOT NULL,
+    precio       DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    stock        DECIMAL(10,3) NOT NULL DEFAULT 0.000,
+    stock_minimo FLOAT         NOT NULL DEFAULT 5,
+    categoria    VARCHAR(100)  NOT NULL,
+    unidad       VARCHAR(30)   NOT NULL DEFAULT 'Piezas',
+    imagen_ruta  VARCHAR(500)           DEFAULT ''
 );
 GO
 
@@ -63,7 +64,6 @@ CREATE TABLE venta_items (
     FOREIGN KEY (producto_id) REFERENCES productos(id)
 );
 GO
-
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='movimientos' AND xtype='U')
 CREATE TABLE movimientos (
     id          INT IDENTITY(1,1) PRIMARY KEY,
@@ -126,6 +126,20 @@ CREATE TABLE devoluciones (
     FOREIGN KEY (venta_id)    REFERENCES ventas(id),
     FOREIGN KEY (producto_id) REFERENCES productos(id)
 );
+GO
+
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='configuracion' AND xtype='U')
+CREATE TABLE configuracion (
+    id            INT          PRIMARY KEY,
+    nombre_tienda VARCHAR(255),
+    sucursal      VARCHAR(255),
+    rfc           VARCHAR(20)
+);
+GO
+
+IF NOT EXISTS (SELECT 1 FROM configuracion WHERE id = 1)
+    INSERT INTO configuracion (id, nombre_tienda, sucursal, rfc)
+    VALUES (1, 'CORPORATIVO POS', 'Sucursal Principal - Centro', 'XAXX010101000');
 GO
 
 IF NOT EXISTS (SELECT 1 FROM usuarios WHERE username = 'admin')
