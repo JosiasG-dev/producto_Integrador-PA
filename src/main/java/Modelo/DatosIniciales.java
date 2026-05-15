@@ -6,13 +6,14 @@ import java.util.List;
 public class DatosIniciales {
 
 	public static List<Producto> getProductos() {
-	    List<Producto> lista = new ArrayList<>();
-	    lista.add(new Producto("001", "Coca-Cola 600ml", 18.00, 50, "Bebidas y Liquidos", "Litros / mL", ""));
-	    lista.add(new Producto("002", "Sabritas Original 45g", 14.00, 40, "Botanas y Dulces", "Kilogramos / g", ""));
-	    lista.add(new Producto("003", "Arroz Verde Valle 1kg", 25.00, 60, "Despensa Basica", "Kilogramos / g", ""));
-	    lista.add(new Producto("004", "Leche Lala 1L", 22.00, 30, "Lacteos y Huevo", "Litros / mL", ""));
-	    lista.add(new Producto("005", "Atun Herdez 140g", 19.00, 30, "Alimentos Preparados/Enlatados", "Kilogramos / g", ""));
-	    return lista;
+		List<Producto> lista = new ArrayList<>();
+		lista.add(new Producto("001", "Coca-Cola 600ml", 18.00, 50, "Bebidas y Liquidos", "Litros / mL", ""));
+		lista.add(new Producto("002", "Sabritas Original 45g", 14.00, 40, "Botanas y Dulces", "Kilogramos / g", ""));
+		lista.add(new Producto("003", "Arroz Verde Valle 1kg", 25.00, 60, "Despensa Basica", "Kilogramos / g", ""));
+		lista.add(new Producto("004", "Leche Lala 1L", 22.00, 30, "Lacteos y Huevo", "Litros / mL", ""));
+		lista.add(new Producto("005", "Atun Herdez 140g", 19.00, 30, "Alimentos Preparados/Enlatados", "Kilogramos / g",
+				""));
+		return lista;
 	}
 
 	public static List<Usuario> getUsuarios() {

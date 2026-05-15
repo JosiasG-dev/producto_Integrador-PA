@@ -140,7 +140,7 @@ public class CajaPanel extends JPanel {
 
 		JPanel cardFondo = tarjetaCaja("Total Ventas", "$0.00", Estilos.BG_BLANCO, Estilos.TEXTO_PRINCIPAL);
 		lblEfectivo = (JLabel) cardFondo.getClientProperty("valor");
-		
+
 		JPanel cardEfectivo = tarjetaCaja("Efectivo en Caja", "$0.00", Estilos.INDIGO, Color.WHITE);
 		lblEfectivoTotal = (JLabel) cardEfectivo.getClientProperty("valor");
 
@@ -213,19 +213,18 @@ public class CajaPanel extends JPanel {
 	public void refrescar() {
 		if (ctrl.isCajaAbierta()) {
 			cardLayout.show(contenido, CARD_ABIERTA);
-			
-			double totalGeneral = ctrl.getMovimientos().stream()
-					.filter(m -> m.getTipo() == Movimiento.Tipo.VENTA)
+
+			double totalGeneral = ctrl.getMovimientos().stream().filter(m -> m.getTipo() == Movimiento.Tipo.VENTA)
 					.mapToDouble(Movimiento::getMonto).sum();
 
 			if (lblEfectivo != null) {
 				lblEfectivo.setText(String.format("$%.2f", totalGeneral));
 			}
-			
+
 			if (lblEfectivoTotal != null) {
 				lblEfectivoTotal.setText(String.format("$%.2f", ctrl.getEfectivoEsperado()));
 			}
-			
+
 			actualizarTablaMovimientos();
 		} else {
 			cardLayout.show(contenido, CARD_CERRADA);

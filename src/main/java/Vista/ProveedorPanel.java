@@ -131,8 +131,8 @@ public class ProveedorPanel extends JPanel {
 				int oid = Integer.parseInt(id);
 				OrdenCompra orden = ctrl.getOrdenes().stream().filter(o -> o.getId() == oid).findFirst().orElse(null);
 				if (orden != null && orden.getEstado() == OrdenCompra.Estado.RECIBIDO) {
-					JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),
-							"Esta orden ya fue recibida.", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), "Esta orden ya fue recibida.",
+							"Aviso", JOptionPane.INFORMATION_MESSAGE);
 					return;
 				}
 				ctrl.recibirOrden(oid);
@@ -211,16 +211,16 @@ public class ProveedorPanel extends JPanel {
 	}
 
 	public void refrescarOrdenes() {
-	    if (modeloOrdenes == null)
-	        return;
-	    modeloOrdenes.setRowCount(0);
-	    for (OrdenCompra o : ctrl.getOrdenes()) {
-	        if (o.getEstado() == OrdenCompra.Estado.PENDIENTE) {
-	            modeloOrdenes.addRow(new Object[] { o.getFolioCorto(), o.getProveedor().getNombre(),
-	                    String.format("$%.2f", o.getTotal()), o.getTipoPago().name(), o.getEstado().name(),
-	                    String.valueOf(o.getId()) });
-	        }
-	    }
+		if (modeloOrdenes == null)
+			return;
+		modeloOrdenes.setRowCount(0);
+		for (OrdenCompra o : ctrl.getOrdenes()) {
+			if (o.getEstado() == OrdenCompra.Estado.PENDIENTE) {
+				modeloOrdenes.addRow(new Object[] { o.getFolioCorto(), o.getProveedor().getNombre(),
+						String.format("$%.2f", o.getTotal()), o.getTipoPago().name(), o.getEstado().name(),
+						String.valueOf(o.getId()) });
+			}
+		}
 	}
 
 	public void refrescarCuentas() {

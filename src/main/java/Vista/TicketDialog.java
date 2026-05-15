@@ -14,7 +14,6 @@ public class TicketDialog extends JDialog {
 	private final double descuento;
 	private JPanel panelTicket;
 
-	
 	public TicketDialog(JFrame parent, Venta venta, ConfiguracionTienda config, double cambio) {
 		this(parent, venta, config, cambio, 0);
 	}

@@ -28,7 +28,7 @@ public class ProductoDialog extends JDialog {
 	}
 
 	private void construir() {
-		setSize(480, 580); 
+		setSize(480, 580);
 		setLocationRelativeTo(getParent());
 		setResizable(false);
 
@@ -86,9 +86,10 @@ public class ProductoDialog extends JDialog {
 		btnImagen.setBounds(x, 396, 200, 30);
 		btnImagen.addActionListener(e -> {
 			JFileChooser selector = new JFileChooser();
-			selector.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Imagenes", "jpg", "png", "jpeg"));
+			selector.setFileFilter(
+					new javax.swing.filechooser.FileNameExtensionFilter("Imagenes", "jpg", "png", "jpeg"));
 			int r = selector.showOpenDialog(this);
-			
+
 			if (r == JFileChooser.APPROVE_OPTION) {
 				File archivoOrigen = selector.getSelectedFile();
 				File carpetaDestino = new File("images");
@@ -167,8 +168,7 @@ public class ProductoDialog extends JDialog {
 			ctrl.guardarProducto(p);
 			dispose();
 		} catch (NumberFormatException ex) {
-			JOptionPane.showMessageDialog(this, "Datos numéricos inválidos", "Error",
-					JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Datos numéricos inválidos", "Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 

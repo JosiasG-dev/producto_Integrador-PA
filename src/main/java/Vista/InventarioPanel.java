@@ -58,9 +58,17 @@ public class InventarioPanel extends JPanel {
 		txtBusqueda.setBackground(Estilos.BG_BLANCO);
 		txtBusqueda.setBounds(80, 56, 280, 34);
 		txtBusqueda.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
-			public void insertUpdate(javax.swing.event.DocumentEvent e) { refrescar(); }
-			public void removeUpdate(javax.swing.event.DocumentEvent e) { refrescar(); }
-			public void changedUpdate(javax.swing.event.DocumentEvent e) { refrescar(); }
+			public void insertUpdate(javax.swing.event.DocumentEvent e) {
+				refrescar();
+			}
+
+			public void removeUpdate(javax.swing.event.DocumentEvent e) {
+				refrescar();
+			}
+
+			public void changedUpdate(javax.swing.event.DocumentEvent e) {
+				refrescar();
+			}
 		});
 		add(txtBusqueda);
 
@@ -83,21 +91,23 @@ public class InventarioPanel extends JPanel {
 		String[] cols = { "SKU", "Foto", "Producto", "Categoria", "Precio", "Existencia", "Stock Min", "Estado" };
 		modeloTabla = new DefaultTableModel(cols, 0) {
 			@Override
-			public boolean isCellEditable(int r, int c) { return false; }
+			public boolean isCellEditable(int r, int c) {
+				return false;
+			}
 		};
 
 		tabla = new JTable(modeloTabla);
 		tabla.setFont(Estilos.FUENTE_NORMAL);
-		tabla.setRowHeight(55); 
-		
+		tabla.setRowHeight(55);
+
 		tabla.getColumnModel().getColumn(1).setPreferredWidth(60);
 		tabla.getColumnModel().getColumn(1).setCellRenderer(new ImagenRenderer());
-		
+
 		tabla.setShowGrid(false);
 		tabla.setIntercellSpacing(new Dimension(0, 2));
 		tabla.getTableHeader().setFont(Estilos.FUENTE_XS);
 		tabla.getTableHeader().setBackground(Estilos.BG_ZINC_100);
-		
+
 		tabla.getColumnModel().getColumn(0).setMaxWidth(70);
 		tabla.getColumnModel().getColumn(4).setMaxWidth(100);
 		tabla.getColumnModel().getColumn(5).setMaxWidth(90);
@@ -129,22 +139,16 @@ public class InventarioPanel extends JPanel {
 	public void refrescar() {
 		String texto = txtBusqueda != null ? txtBusqueda.getText() : "";
 		String cat = (cmbCategoria != null && cmbCategoria.getSelectedIndex() > 0)
-				? (String) cmbCategoria.getSelectedItem() : "";
-		
+				? (String) cmbCategoria.getSelectedItem()
+				: "";
+
 		List<Producto> lista = ctrl.filtrar(texto, cat);
 		modeloTabla.setRowCount(0);
 
 		for (Producto p : lista) {
-			modeloTabla.addRow(new Object[] { 
-				p.getId(),          
-				p.getImagenRuta(),      
-				p.getNombre().toUpperCase(), 
-				p.getCategoria(),
-				String.format("$%.2f", p.getPrecio()), 
-				String.format("%.1f", p.getStock()),
-				String.format("%.0f", p.getStockMinimo()), 
-				p.stockBajo() ? "BAJO" : "OK" 
-			});
+			modeloTabla.addRow(new Object[] { p.getId(), p.getImagenRuta(), p.getNombre().toUpperCase(),
+					p.getCategoria(), String.format("$%.2f", p.getPrecio()), String.format("%.1f", p.getStock()),
+					String.format("%.0f", p.getStockMinimo()), p.stockBajo() ? "BAJO" : "OK" });
 		}
 	}
 
@@ -154,11 +158,13 @@ public class InventarioPanel extends JPanel {
 		long cnt = 0;
 		for (Producto p : todos) {
 			if (p.stockBajo()) {
-				sb.append(String.format("• %-20s (Cant: %.1f / Min: %.0f)\n", p.getNombre(), p.getStock(), p.getStockMinimo()));
+				sb.append(String.format("• %-20s (Cant: %.1f / Min: %.0f)\n", p.getNombre(), p.getStock(),
+						p.getStockMinimo()));
 				cnt++;
 			}
 		}
-		if (cnt == 0) sb.append("Todo en orden, no hay stock bajo.");
+		if (cnt == 0)
+			sb.append("Todo en orden, no hay stock bajo.");
 		JOptionPane.showMessageDialog(this, sb.toString(), "Aviso de Inventario", JOptionPane.WARNING_MESSAGE);
 	}
 
@@ -167,17 +173,18 @@ public class InventarioPanel extends JPanel {
 		dlg.setVisible(true);
 		refrescar();
 	}
-	
+
 	public static class ImagenRenderer extends DefaultTableCellRenderer {
 		@Override
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+				int row, int column) {
 			JLabel lbl = new JLabel();
 			lbl.setHorizontalAlignment(SwingConstants.CENTER);
-			
+
 			if (value != null && !value.toString().isEmpty()) {
 				String ruta = value.toString();
 				File archivo = new File(ruta);
-				
+
 				if (archivo.exists()) {
 					try {
 						ImageIcon icono = new ImageIcon(archivo.getAbsolutePath());

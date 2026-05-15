@@ -89,8 +89,6 @@ public class VentanaPrincipal extends JFrame {
 
 		root.add(contenido, BorderLayout.CENTER);
 		frame.setContentPane(root);
-		
-		// al terminar de construir ponemos el titulo inicial
 		actualizarTitulo();
 	}
 
@@ -104,9 +102,8 @@ public class VentanaPrincipal extends JFrame {
 		JPanel logo = new JPanel(new FlowLayout(FlowLayout.LEFT, 16, 20));
 		logo.setBackground(Estilos.BG_OSCURO);
 		logo.setMaximumSize(new Dimension(Integer.MAX_VALUE, 80));
-		
-		// usamos el nombre que viene de la base de datos de tamaulipas
-		labelNombreTienda = new JLabel("🏪 " + app.getConfig().getNombre());
+
+		labelNombreTienda = new JLabel(" " + app.getConfig().getNombre());
 		labelNombreTienda.setFont(Estilos.FUENTE_BOLD);
 		labelNombreTienda.setForeground(Color.WHITE);
 		logo.add(labelNombreTienda);
@@ -118,21 +115,21 @@ public class VentanaPrincipal extends JFrame {
 		sidebar.add(sep);
 		sidebar.add(Box.createVerticalStrut(12));
 
-		sidebar.add(itemMenu("🛒  Venta", TAB_VENTA));
-		sidebar.add(itemMenu("📦  Inventario", TAB_INVENTARIO));
-		sidebar.add(itemMenu("🚚  Proveedores", TAB_PROVEEDORES));
-		sidebar.add(itemMenu("💵  Flujo de Caja", TAB_CAJA));
-		sidebar.add(itemMenu("📊  Reportes", TAB_REPORTES));
+		sidebar.add(itemMenu("Venta", TAB_VENTA));
+		sidebar.add(itemMenu("Inventario", TAB_INVENTARIO));
+		sidebar.add(itemMenu("Proveedores", TAB_PROVEEDORES));
+		sidebar.add(itemMenu("Flujo de Caja", TAB_CAJA));
+		sidebar.add(itemMenu("Reportes", TAB_REPORTES));
 
 		if (app.getUsuarioActivo().esAdmin()) {
 			sidebar.add(Box.createVerticalStrut(16));
-			JLabel secLabel = new JLabel("  CONFIGURACIÓN");
+			JLabel secLabel = new JLabel("CONFIGURACIÓN");
 			secLabel.setFont(Estilos.FUENTE_XS);
 			secLabel.setForeground(new Color(63, 63, 70));
 			secLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 			sidebar.add(secLabel);
-			sidebar.add(itemMenu("👥  Personal", TAB_USUARIOS));
-			sidebar.add(itemMenu("⚙️  Sistema", TAB_CONFIG));
+			sidebar.add(itemMenu("Personal", TAB_USUARIOS));
+			sidebar.add(itemMenu("Sistema", TAB_CONFIG));
 		}
 
 		sidebar.add(Box.createVerticalGlue());
@@ -154,7 +151,7 @@ public class VentanaPrincipal extends JFrame {
 		rolLbl.setForeground(Estilos.INDIGO);
 		rolLbl.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-		JButton btnSalir = new JButton("⏻  Cerrar Sesión");
+		JButton btnSalir = new JButton("Cerrar Sesión");
 		btnSalir.setFont(Estilos.FUENTE_XS);
 		btnSalir.setForeground(Estilos.ROSE);
 		btnSalir.setBackground(Estilos.BG_MUY_OSCURO);
@@ -214,17 +211,17 @@ public class VentanaPrincipal extends JFrame {
 		case TAB_REPORTES -> reportesPanel.refrescar();
 		}
 	}
-	
-	public void actualizarTitulo() {
-	    ConfiguracionTienda config = app.getConfig();
 
-	    if (labelNombreTienda != null) {
-	    	labelNombreTienda.setText("🏪 " + config.getNombre());
-	    }
-	    
-	    if (frame != null) {
-	    	frame.setTitle(config.getNombre() + " - Sistema de Punto de Venta");
-	    }
+	public void actualizarTitulo() {
+		ConfiguracionTienda config = app.getConfig();
+
+		if (labelNombreTienda != null) {
+			labelNombreTienda.setText("🏪 " + config.getNombre());
+		}
+
+		if (frame != null) {
+			frame.setTitle(config.getNombre() + " - Sistema de Punto de Venta");
+		}
 	}
 
 	public void refrescarInventario() {

@@ -46,60 +46,60 @@ public class ProveedorControlador {
 	}
 
 	public void recibirOrden(int ordenId) {
-	    OrdenCompra orden = app.getOrdenBD().buscarPorId(ordenId);
-	    if (orden == null || !orden.isPendiente())
-	        return;
+		OrdenCompra orden = app.getOrdenBD().buscarPorId(ordenId);
+		if (orden == null || !orden.isPendiente())
+			return;
 
-	    for (OrdenCompra.ItemOrden item : orden.getItems()) {
-	        Producto p = app.getProductoBD().buscarPorId(item.getProducto().getId());
-	        if (p != null) {
-	            double nuevoStock = p.getStock() + item.getCantidadSolicitada();
-	            app.getProductoBD().actualizarStock(p.getId(), nuevoStock);
-	        }
-	    }
-	    
-	    app.getOrdenBD().marcarRecibida(ordenId);
+		for (OrdenCompra.ItemOrden item : orden.getItems()) {
+			Producto p = app.getProductoBD().buscarPorId(item.getProducto().getId());
+			if (p != null) {
+				double nuevoStock = p.getStock() + item.getCantidadSolicitada();
+				app.getProductoBD().actualizarStock(p.getId(), nuevoStock);
+			}
+		}
 
-	    if (orden.getTipoPago() == OrdenCompra.TipoPago.CREDITO) {
-	        CuentaPorPagar cuenta = new CuentaPorPagar(0, orden.getProveedor(), ordenId, orden.getTotal(), 0,
-	                orden.getTotal(), "7 dias", CuentaPorPagar.Estado.PENDIENTE);
-	        app.getCuentaBD().insertar(cuenta);
-	    } else {
-	        int confirmar = javax.swing.JOptionPane.showConfirmDialog(null, 
-	            "vas a pagar " + orden.getTotal() + " en efectivo", "confirmar pago", 
-	            javax.swing.JOptionPane.YES_NO_OPTION);
-	        
-	        if (confirmar == javax.swing.JOptionPane.YES_OPTION) {
-	            app.registrarRetiro("pago de contado orden " + orden.getId(), orden.getTotal());
-	        }
-	    }
+		app.getOrdenBD().marcarRecibida(ordenId);
 
-	    if (panel != null) {
-	        panel.refrescarOrdenes();
-	        panel.refrescarCuentas();
-	        app.getVentanaPrincipal().refrescarInventario();
-	        app.getVentanaPrincipal().refrescarCaja();
-	    }
+		if (orden.getTipoPago() == OrdenCompra.TipoPago.CREDITO) {
+			CuentaPorPagar cuenta = new CuentaPorPagar(0, orden.getProveedor(), ordenId, orden.getTotal(), 0,
+					orden.getTotal(), "7 dias", CuentaPorPagar.Estado.PENDIENTE);
+			app.getCuentaBD().insertar(cuenta);
+		} else {
+			int confirmar = javax.swing.JOptionPane.showConfirmDialog(null,
+					"vas a pagar " + orden.getTotal() + " en efectivo", "confirmar pago",
+					javax.swing.JOptionPane.YES_NO_OPTION);
+
+			if (confirmar == javax.swing.JOptionPane.YES_OPTION) {
+				app.registrarRetiro("pago de contado orden " + orden.getId(), orden.getTotal());
+			}
+		}
+
+		if (panel != null) {
+			panel.refrescarOrdenes();
+			panel.refrescarCuentas();
+			app.getVentanaPrincipal().refrescarInventario();
+			app.getVentanaPrincipal().refrescarCaja();
+		}
 	}
 
 	public void liquidarCuenta(int cuentaId, double monto) {
-	    for (CuentaPorPagar c : app.getCuentaBD().obtenerTodas()) {
-	        if (c.getId() == cuentaId) {
-	            double nuevoPagado = c.getPagado() + monto;
-	            double nuevoSaldo = c.getMontoTotal() - nuevoPagado;
-	            String nuevoEstado = nuevoSaldo <= 0 ? "PAGADO" : "PARCIAL";
-	            
-	            app.getCuentaBD().aplicarPago(cuentaId, nuevoPagado, Math.max(0, nuevoSaldo), nuevoEstado);
-	            
-	            app.registrarRetiro("pago deuda " + c.getProveedor().getNombre(), monto);
-	            
-	            if (panel != null) {
-	                panel.refrescarCuentas();
-	                panel.refrescarOrdenes(); 
-	            }
-	            break;
-	        }
-	    }
+		for (CuentaPorPagar c : app.getCuentaBD().obtenerTodas()) {
+			if (c.getId() == cuentaId) {
+				double nuevoPagado = c.getPagado() + monto;
+				double nuevoSaldo = c.getMontoTotal() - nuevoPagado;
+				String nuevoEstado = nuevoSaldo <= 0 ? "PAGADO" : "PARCIAL";
+
+				app.getCuentaBD().aplicarPago(cuentaId, nuevoPagado, Math.max(0, nuevoSaldo), nuevoEstado);
+
+				app.registrarRetiro("pago deuda " + c.getProveedor().getNombre(), monto);
+
+				if (panel != null) {
+					panel.refrescarCuentas();
+					panel.refrescarOrdenes();
+				}
+				break;
+			}
+		}
 	}
 
 	public List<Proveedor> getProveedores() {

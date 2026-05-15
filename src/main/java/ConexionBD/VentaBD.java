@@ -88,9 +88,9 @@ public class VentaBD {
 			ps.setInt(1, ventaId);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
-			    Producto p = new Producto(rs.getString("producto_id"), rs.getString("nombre"),
-			            rs.getDouble("precio_unit"), 0, rs.getString("categoria"), rs.getString("unidad"), "");
-			    items.add(new ItemCarrito(p, rs.getDouble("cantidad")));
+				Producto p = new Producto(rs.getString("producto_id"), rs.getString("nombre"),
+						rs.getDouble("precio_unit"), 0, rs.getString("categoria"), rs.getString("unidad"), "");
+				items.add(new ItemCarrito(p, rs.getDouble("cantidad")));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

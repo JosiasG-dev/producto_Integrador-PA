@@ -19,7 +19,7 @@ public class AppControlador {
 	private final CuentaPorPagarBD cuentaBD = new CuentaPorPagarBD();
 	private final DevolucionBD devolucionBD = new DevolucionBD();
 	private final ConfiguracionBD configBD = new ConfiguracionBD();
-	
+
 	private double montoCaja = 0;
 	private boolean cajaAbierta = false;
 	private Usuario usuarioActivo;
@@ -37,12 +37,11 @@ public class AppControlador {
 	private UsuarioControlador usuarioCtrl;
 
 	public void iniciar() {
-		// cargamos la configuracion guardada de abarrotes lupe desde la base de datos
 		ConfiguracionTienda guardada = configBD.obtener();
 		if (guardada != null) {
 			this.config = guardada;
 		}
-		
+
 		loginVista = new LoginVista(this);
 		loginVista.mostrar();
 	}
@@ -74,21 +73,20 @@ public class AppControlador {
 	}
 
 	public void registrarVenta(Venta venta) {
-	    ventaBD.insertar(venta);
-	    
-	    // solo sumamos al dinero fisico si es efectivo
-	    if (venta.getMetodoPago().equalsIgnoreCase("Efectivo")) {
-	        this.montoCaja += venta.getTotal();
-	    }
-	    
-	    movimientoBD.insertar(new Movimiento(Movimiento.Tipo.VENTA, 
-	        "venta #" + venta.getId() + " (" + venta.getMetodoPago() + ")", 
-	        venta.getTotal(), new java.util.Date(), usuarioActivo.getNombre()));
+		ventaBD.insertar(venta);
 
-	    if (ventanaPrincipal != null) {
-	        ventanaPrincipal.refrescarCaja();
-	        ventanaPrincipal.refrescarInventario();
-	    }
+		if (venta.getMetodoPago().equalsIgnoreCase("Efectivo")) {
+			this.montoCaja += venta.getTotal();
+		}
+
+		movimientoBD.insertar(
+				new Movimiento(Movimiento.Tipo.VENTA, "venta #" + venta.getId() + " (" + venta.getMetodoPago() + ")",
+						venta.getTotal(), new java.util.Date(), usuarioActivo.getNombre()));
+
+		if (ventanaPrincipal != null) {
+			ventanaPrincipal.refrescarCaja();
+			ventanaPrincipal.refrescarInventario();
+		}
 	}
 
 	public void registrarDevolucion(Devolucion d) {
@@ -103,72 +101,72 @@ public class AppControlador {
 	}
 
 	public void registrarVentaSimple(double monto) {
-	    this.montoCaja += monto;
-	    if (ventanaPrincipal != null) {
-	        ventanaPrincipal.refrescarCaja();
-	    }
+		this.montoCaja += monto;
+		if (ventanaPrincipal != null) {
+			ventanaPrincipal.refrescarCaja();
+		}
 	}
-	
+
 	public void registrarRetiro(String concepto, double monto) {
-	    this.montoCaja -= monto;
-	    movimientoBD.insertar(new Movimiento(Movimiento.Tipo.RETIRO, concepto, monto, 
-	            new java.util.Date(), usuarioActivo.getNombre()));
-	    if (ventanaPrincipal != null) {
-	        ventanaPrincipal.refrescarCaja();
-	    }
+		this.montoCaja -= monto;
+		movimientoBD.insertar(new Movimiento(Movimiento.Tipo.RETIRO, concepto, monto, new java.util.Date(),
+				usuarioActivo.getNombre()));
+		if (ventanaPrincipal != null) {
+			ventanaPrincipal.refrescarCaja();
+		}
 	}
 
 	public void abrirCaja(double fondo) {
-	    this.montoCaja = fondo;
-	    this.cajaAbierta = true;
-	    
-	    movimientoBD.insertar(new Movimiento(Movimiento.Tipo.VENTA, "apertura de caja", fondo, 
-	            new java.util.Date(), usuarioActivo.getNombre()));
-	            
-	    if (ventanaPrincipal != null) {
-	        ventanaPrincipal.refrescarCaja();
-	    }
+		this.montoCaja = fondo;
+		this.cajaAbierta = true;
+
+		movimientoBD.insertar(new Movimiento(Movimiento.Tipo.VENTA, "apertura de caja", fondo, new java.util.Date(),
+				usuarioActivo.getNombre()));
+
+		if (ventanaPrincipal != null) {
+			ventanaPrincipal.refrescarCaja();
+		}
 	}
 
 	public void guardarConfiguracion(ConfiguracionTienda nuevaConfig) {
-	    this.config = nuevaConfig;
-	    
-	    configBD.actualizar(nuevaConfig); 
-	    
-	    if (ventanaPrincipal != null) {
-	        ventanaPrincipal.actualizarTitulo();
-	    }
+		this.config = nuevaConfig;
+
+		configBD.actualizar(nuevaConfig);
+
+		if (ventanaPrincipal != null) {
+			ventanaPrincipal.actualizarTitulo();
+		}
 	}
-	
+
 	public void reiniciarSistemaCompleto() {
-	    try {
-	        String[] tablas = { "devoluciones", "cuentas_por_pagar", "ordenes_compra", "movimientos", "ventas" };
-	        
-	        try (java.sql.Connection c = ConexionBD.Conexion.getConexion(); 
-	             java.sql.Statement st = c.createStatement()) {
-	            
-	            st.executeUpdate("SET FOREIGN_KEY_CHECKS = 0");
-	            
-	            for (String tabla : tablas) {
-	                st.executeUpdate("TRUNCATE TABLE " + tabla);
-	            }
-	            
-	            st.executeUpdate("SET FOREIGN_KEY_CHECKS = 1");
-	        }
-	        
-	        this.montoCaja = 0;
-	        this.cajaAbierta = false;
-	        
-	        if (ventanaPrincipal != null) {
-	            ventanaPrincipal.refrescarCaja();
-	            this.onCerrarSesion(); 
-	        }
-	        
-	        JOptionPane.showMessageDialog(null, "sistema reiniciado con exito");
-	        
-	    } catch (Exception e) {
-	        JOptionPane.showMessageDialog(null, "error al reiniciar: " + e.getMessage());
-	    }
+		try {
+			String[] tablas = { "devoluciones", "cuentas_por_pagar", "ordenes_compra", "movimientos", "ventas" };
+
+			try (java.sql.Connection c = ConexionBD.Conexion.getConexion();
+					java.sql.Statement st = c.createStatement()) {
+
+				st.executeUpdate("SET FOREIGN_KEY_CHECKS = 0");
+
+				for (String tabla : tablas) {
+					st.executeUpdate("TRUNCATE TABLE " + tabla);
+				}
+
+				st.executeUpdate("SET FOREIGN_KEY_CHECKS = 1");
+			}
+
+			this.montoCaja = 0;
+			this.cajaAbierta = false;
+
+			if (ventanaPrincipal != null) {
+				ventanaPrincipal.refrescarCaja();
+				this.onCerrarSesion();
+			}
+
+			JOptionPane.showMessageDialog(null, "sistema reiniciado con exito");
+
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "error al reiniciar: " + e.getMessage());
+		}
 	}
 
 	public List<Usuario> getUsuarios() {

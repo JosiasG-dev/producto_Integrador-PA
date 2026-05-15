@@ -37,9 +37,9 @@ public class DevolucionBD {
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				Producto prod = new Producto(rs.getString("producto_id"), rs.getString("nombre"),
-						rs.getDouble("precio"), 0, rs.getString("categoria"), rs.getString("unidad"), 
+						rs.getDouble("precio"), 0, rs.getString("categoria"), rs.getString("unidad"),
 						rs.getString("imagen_ruta"));
-						
+
 				lista.add(new Devolucion(rs.getInt("id"), ventaId, prod, rs.getDouble("cantidad"),
 						rs.getString("motivo"), rs.getTimestamp("fecha"), rs.getString("cajero")));
 			}
@@ -56,9 +56,9 @@ public class DevolucionBD {
 		try (Statement st = Conexion.getConexion().createStatement(); ResultSet rs = st.executeQuery(sql)) {
 			while (rs.next()) {
 				Producto prod = new Producto(rs.getString("producto_id"), rs.getString("nombre"),
-						rs.getDouble("precio"), 0, rs.getString("categoria"), rs.getString("unidad"), 
+						rs.getDouble("precio"), 0, rs.getString("categoria"), rs.getString("unidad"),
 						rs.getString("imagen_ruta"));
-						
+
 				lista.add(new Devolucion(rs.getInt("id"), rs.getInt("venta_id"), prod, rs.getDouble("cantidad"),
 						rs.getString("motivo"), rs.getTimestamp("fecha"), rs.getString("cajero")));
 			}

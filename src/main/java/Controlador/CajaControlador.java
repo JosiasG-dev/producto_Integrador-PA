@@ -29,16 +29,15 @@ public class CajaControlador {
 		if (panel != null)
 			panel.refrescar();
 	}
-	
 
 	public void registrarIngresoExtra(String concepto, double monto) {
-	    app.getMovimientoBD().insertar(new Movimiento(Movimiento.Tipo.VENTA, concepto, monto, 
-	            new java.util.Date(), app.getUsuarioActivo().getNombre()));
-	    app.registrarVentaSimple(monto);
-	    if (panel != null)
-	        panel.refrescar();
+		app.getMovimientoBD().insertar(new Movimiento(Movimiento.Tipo.VENTA, concepto, monto, new java.util.Date(),
+				app.getUsuarioActivo().getNombre()));
+		app.registrarVentaSimple(monto);
+		if (panel != null)
+			panel.refrescar();
 	}
-	
+
 	public double getTotalVentas() {
 		return app.getMovimientos().stream().filter(m -> m.getTipo() == Movimiento.Tipo.VENTA)
 				.mapToDouble(Movimiento::getMonto).sum();

@@ -58,58 +58,57 @@ public class ConfigPanel extends JPanel {
 		btnGuardar.setAlignmentX(Component.LEFT_ALIGNMENT);
 		btnGuardar.addActionListener(e -> guardar());
 		form.add(btnGuardar);
-		
+
 		form.add(Box.createVerticalStrut(20));
-		
+
 		JButton btnReiniciar = Estilos.botonPeligro("REINICIAR SISTEMA");
 		btnReiniciar.setFont(new Font("SansSerif", Font.BOLD, 16));
 		btnReiniciar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
 		btnReiniciar.setAlignmentX(Component.LEFT_ALIGNMENT);
 		btnReiniciar.addActionListener(e -> {
-		    int confirm1 = JOptionPane.showConfirmDialog(this, 
-		        "¿estas seguro? se borraran todas las ventas y movimientos del sistema", 
-		        "ADVERTENCIA 1 DE 3", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-		        
-		    if (confirm1 == JOptionPane.YES_OPTION) {
-		        int confirm2 = JOptionPane.showConfirmDialog(this, 
-		            "esta accion no se puede deshacer; perderas todo el historial financiero, ¿continuar?", 
-		            "ADVERTENCIA 2 DE 3", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
-		            
-		        if (confirm2 == JOptionPane.YES_OPTION) {
-		            String pass = JOptionPane.showInputDialog(this, 
-		                "para confirmar escribe la palabra: ELIMINAR TODO");
-		                
-		            if (pass != null && pass.equalsIgnoreCase("ELIMINAR TODO")) {
-		                app.reiniciarSistemaCompleto();
-		            } else {
-		                JOptionPane.showMessageDialog(this, "reinicio cancelado, la palabra no coincide");
-		            }
-		        }
-		    }
+			int confirm1 = JOptionPane.showConfirmDialog(this,
+					"¿estas seguro? se borraran todas las ventas y movimientos del sistema", "ADVERTENCIA 1 DE 3",
+					JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+
+			if (confirm1 == JOptionPane.YES_OPTION) {
+				int confirm2 = JOptionPane.showConfirmDialog(this,
+						"esta accion no se puede deshacer; perderas todo el historial financiero, ¿continuar?",
+						"ADVERTENCIA 2 DE 3", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
+
+				if (confirm2 == JOptionPane.YES_OPTION) {
+					String pass = JOptionPane.showInputDialog(this, "para confirmar escribe la palabra: ELIMINAR TODO");
+
+					if (pass != null && pass.equalsIgnoreCase("ELIMINAR TODO")) {
+						app.reiniciarSistemaCompleto();
+					} else {
+						JOptionPane.showMessageDialog(this, "reinicio cancelado, la palabra no coincide");
+					}
+				}
+			}
 		});
 		form.add(btnReiniciar);
 
 		add(header, BorderLayout.NORTH);
-		
+
 		JScrollPane scroll = new JScrollPane(form);
 		scroll.setBorder(null);
 		add(scroll, BorderLayout.CENTER);
 	}
 
 	private void guardar() {
-	    String nuevoNombre = txtNombre.getText();
-	    String nuevaSucursal = txtSucursal.getText();
-	    String nuevoRFC = txtRFC.getText();
-	    
-	    if (nuevoNombre.isEmpty() || nuevaSucursal.isEmpty() || nuevoRFC.isEmpty()) {
-	        JOptionPane.showMessageDialog(this, "por favor llena todos los campos");
-	        return;
-	    }
-	    ConfiguracionTienda nuevaConfig = new ConfiguracionTienda(nuevoNombre, nuevaSucursal, nuevoRFC);
-	    app.guardarConfiguracion(nuevaConfig);
-	    app.getVentanaPrincipal().actualizarTitulo();
-	    
-	    JOptionPane.showMessageDialog(this, "configuracion guardada exitosamente en la base de datos");
+		String nuevoNombre = txtNombre.getText();
+		String nuevaSucursal = txtSucursal.getText();
+		String nuevoRFC = txtRFC.getText();
+
+		if (nuevoNombre.isEmpty() || nuevaSucursal.isEmpty() || nuevoRFC.isEmpty()) {
+			JOptionPane.showMessageDialog(this, "por favor llena todos los campos");
+			return;
+		}
+		ConfiguracionTienda nuevaConfig = new ConfiguracionTienda(nuevoNombre, nuevaSucursal, nuevoRFC);
+		app.guardarConfiguracion(nuevaConfig);
+		app.getVentanaPrincipal().actualizarTitulo();
+
+		JOptionPane.showMessageDialog(this, "configuracion guardada exitosamente en la base de datos");
 	}
 
 	private JLabel lbl(String t) {

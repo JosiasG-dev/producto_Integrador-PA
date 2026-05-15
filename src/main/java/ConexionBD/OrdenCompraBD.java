@@ -117,10 +117,10 @@ public class OrdenCompraBD {
 			ps.setInt(1, ordenId);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
-			    Producto prod = new Producto(rs.getString("producto_id"), rs.getString("nombre"),
-			            rs.getDouble("precio"), 0, rs.getString("categoria"), rs.getString("unidad"), "");
-			    items.add(new OrdenCompra.ItemOrden(prod, rs.getDouble("cantidad_solicitada"),
-			            rs.getDouble("precio_costo")));
+				Producto prod = new Producto(rs.getString("producto_id"), rs.getString("nombre"),
+						rs.getDouble("precio"), 0, rs.getString("categoria"), rs.getString("unidad"), "");
+				items.add(new OrdenCompra.ItemOrden(prod, rs.getDouble("cantidad_solicitada"),
+						rs.getDouble("precio_costo")));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

@@ -8,9 +8,10 @@ public class Producto {
 	private double stockMinimo;
 	private String categoria;
 	private String unidad;
-	private String imagenRuta; 
-	
-	public Producto(String id, String nombre, double precio, double stock, String categoria, String unidad, String imagenRuta) {
+	private String imagenRuta;
+
+	public Producto(String id, String nombre, double precio, double stock, String categoria, String unidad,
+			String imagenRuta) {
 		this.id = id;
 		this.nombre = nombre;
 		this.precio = precio;
