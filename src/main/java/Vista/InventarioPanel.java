@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.table.*;
 import Controlador.InventarioControlador;
 import Modelo.*;
+import Util.ManejoErrores;
 import java.awt.*;
 import java.util.List;
 import java.io.File;
@@ -154,18 +155,88 @@ public class InventarioPanel extends JPanel {
 
 	private void mostrarBajoStock() {
 		List<Producto> todos = ctrl.filtrar("", "");
-		StringBuilder sb = new StringBuilder("Reporte de Stock Bajo:\n\n");
-		long cnt = 0;
-		for (Producto p : todos) {
-			if (p.stockBajo()) {
-				sb.append(String.format("• %-20s (Cant: %.1f / Min: %.0f)\n", p.getNombre(), p.getStock(),
-						p.getStockMinimo()));
-				cnt++;
+		List<Producto> bajos = todos.stream().filter(Producto::stockBajo)
+				.sorted((a, b) -> Double.compare(a.getStock() - a.getStockMinimo(), b.getStock() - b.getStockMinimo()))
+				.collect(java.util.stream.Collectors.toList());
+
+		JDialog dlg = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this),
+				"Reporte de Productos con Bajo Stock", true);
+		dlg.setSize(720, 480);
+		dlg.setLocationRelativeTo(this);
+		dlg.setLayout(null);
+		dlg.getContentPane().setBackground(Estilos.BG_BLANCO);
+
+		JLabel tit = new JLabel("PRODUCTOS CON STOCK BAJO");
+		tit.setFont(Estilos.FUENTE_TITULO);
+		tit.setBounds(20, 14, 500, 30);
+		dlg.add(tit);
+
+		JLabel sub = new JLabel(bajos.isEmpty()
+				? "Todo en orden — ningun producto por debajo del minimo."
+				: bajos.size() + " producto(s) requieren reposicion.");
+		sub.setFont(Estilos.FUENTE_NORMAL);
+		sub.setForeground(bajos.isEmpty() ? Estilos.EMERALD : Estilos.ROSE);
+		sub.setBounds(20, 44, 660, 18);
+		dlg.add(sub);
+
+		String[] cols = { "SKU", "Nombre", "Categoria", "Stock Actual", "Stock Minimo", "Faltante" };
+		DefaultTableModel modelo = new DefaultTableModel(cols, 0) {
+			@Override public boolean isCellEditable(int r, int c) { return false; }
+		};
+		JTable tabla = new JTable(modelo);
+		tabla.setFont(Estilos.FUENTE_NORMAL);
+		tabla.setRowHeight(36);
+		tabla.setShowGrid(false);
+		tabla.setIntercellSpacing(new Dimension(0, 2));
+		tabla.getTableHeader().setFont(Estilos.FUENTE_XS);
+		tabla.getTableHeader().setBackground(Estilos.BG_ZINC_100);
+		tabla.getColumnModel().getColumn(0).setMaxWidth(60);
+		tabla.getColumnModel().getColumn(3).setMaxWidth(100);
+		tabla.getColumnModel().getColumn(4).setMaxWidth(100);
+		tabla.getColumnModel().getColumn(5).setMaxWidth(80);
+
+		tabla.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+			@Override
+			public Component getTableCellRendererComponent(JTable t, Object v, boolean sel, boolean foc, int r, int c) {
+				Component comp = super.getTableCellRendererComponent(t, v, sel, foc, r, c);
+				if (!sel) {
+					String stockStr = (String) t.getModel().getValueAt(r, 3);
+					try {
+						double stock = Double.parseDouble(stockStr);
+						comp.setBackground(stock <= 0 ? new Color(255, 230, 230) : Estilos.BG_BLANCO);
+					} catch (Exception e) {
+						comp.setBackground(Estilos.BG_BLANCO);
+					}
+				}
+				return comp;
 			}
+		});
+
+		for (Producto p : bajos) {
+			double faltante = Math.max(0, p.getStockMinimo() - p.getStock());
+			modelo.addRow(new Object[] {
+				p.getId(), p.getNombre(), p.getCategoria(),
+				String.format("%.1f", p.getStock()),
+				String.format("%.0f", p.getStockMinimo()),
+				String.format("%.1f", faltante)
+			});
 		}
-		if (cnt == 0)
-			sb.append("Todo en orden, no hay stock bajo.");
-		JOptionPane.showMessageDialog(this, sb.toString(), "Aviso de Inventario", JOptionPane.WARNING_MESSAGE);
+		if (bajos.isEmpty())
+			modelo.addRow(new Object[] { "-", "Todos los productos tienen stock suficiente", "", "", "", "" });
+
+		JScrollPane scroll = new JScrollPane(tabla);
+		scroll.setBorder(BorderFactory.createLineBorder(Estilos.BORDE));
+		scroll.getViewport().setBackground(Estilos.BG_BLANCO);
+		scroll.setBounds(20, 72, 680, 350);
+		dlg.add(scroll);
+
+		JButton btnCerrar = Estilos.botonPrimario("Cerrar");
+		btnCerrar.setBounds(300, 432, 120, 36);
+		btnCerrar.addActionListener(e -> dlg.dispose());
+		dlg.add(btnCerrar);
+
+		ManejoErrores.registrarInfo("Reporte bajo stock: " + bajos.size() + " productos");
+		dlg.setVisible(true);
 	}
 
 	private void abrirFormulario(Producto producto) {

@@ -10,7 +10,7 @@ public class ProductoBD {
 	public List<Producto> obtenerTodos() {
 		List<Producto> lista = new ArrayList<>();
 		try (Statement st = Conexion.getConexion().createStatement();
-				ResultSet rs = st.executeQuery("SELECT * FROM productos ORDER BY nombre")) {
+				ResultSet rs = st.executeQuery("SELECT * FROM productos ORDER BY CAST(id AS UNSIGNED)")) {
 			while (rs.next())
 				lista.add(mapear(rs));
 		} catch (SQLException e) {
@@ -33,14 +33,39 @@ public class ProductoBD {
 
 	public List<Producto> buscar(String texto) {
 		List<Producto> lista = new ArrayList<>();
-		try (PreparedStatement ps = Conexion.getConexion()
-				.prepareStatement("SELECT * FROM productos WHERE nombre LIKE ? OR id LIKE ? LIMIT 10")) {
-			String q = "%" + texto + "%";
-			ps.setString(1, q);
-			ps.setString(2, q);
-			ResultSet rs = ps.executeQuery();
-			while (rs.next())
-				lista.add(mapear(rs));
+		if (texto == null || texto.isBlank()) return lista;
+		String txt = texto.trim();
+		
+		boolean esSoloNumero = txt.matches("\\d+");
+		try {
+			if (esSoloNumero) {
+				
+				String skuFormateado = String.format("%03d", Integer.parseInt(txt));
+				try (PreparedStatement ps = Conexion.getConexion()
+						.prepareStatement("SELECT * FROM productos WHERE id = ? OR id = ? LIMIT 10")) {
+					ps.setString(1, txt);
+					ps.setString(2, skuFormateado);
+					ResultSet rs = ps.executeQuery();
+					while (rs.next()) lista.add(mapear(rs));
+				}
+				
+				if (lista.isEmpty()) {
+					try (PreparedStatement ps = Conexion.getConexion()
+							.prepareStatement("SELECT * FROM productos WHERE nombre LIKE ? LIMIT 10")) {
+						ps.setString(1, "%" + txt + "%");
+						ResultSet rs = ps.executeQuery();
+						while (rs.next()) lista.add(mapear(rs));
+					}
+				}
+			} else {
+				
+				try (PreparedStatement ps = Conexion.getConexion()
+						.prepareStatement("SELECT * FROM productos WHERE nombre LIKE ? LIMIT 10")) {
+					ps.setString(1, "%" + txt + "%");
+					ResultSet rs = ps.executeQuery();
+					while (rs.next()) lista.add(mapear(rs));
+				}
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -117,7 +142,10 @@ public class ProductoBD {
 	}
 
 	private Producto mapear(ResultSet rs) throws SQLException {
-		Producto p = new Producto(rs.getString("id"), rs.getString("nombre"), rs.getDouble("precio"),
+		
+		java.math.BigDecimal precioExacto = rs.getBigDecimal("precio");
+		double precio = (precioExacto != null) ? precioExacto.doubleValue() : 0.0;
+		Producto p = new Producto(rs.getString("id"), rs.getString("nombre"), precio,
 				rs.getDouble("stock"), rs.getString("categoria"), rs.getString("unidad"), rs.getString("imagen_ruta"));
 		p.setStockMinimo(rs.getDouble("stock_minimo"));
 		return p;

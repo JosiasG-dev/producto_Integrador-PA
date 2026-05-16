@@ -256,4 +256,24 @@ public class AppControlador {
 	public VentanaPrincipal getVentanaPrincipal() {
 		return ventanaPrincipal;
 	}
+	
+	private void cargarProductosIniciales() {
+		try {
+			List<Modelo.Producto> existentes = productoBD.obtenerTodos();
+			if (existentes.size() < 50) {
+				List<Modelo.Producto> productosBase = Modelo.DatosIniciales.getProductos();
+				int total = 0;
+				for (Modelo.Producto p : productosBase) {
+					if (productoBD.buscarPorId(p.getId()) == null) {
+						productoBD.insertar(p);
+						total++;
+					}
+				}
+				System.out.println("Seed: " + total + " productos productosBase total.");
+			}
+		} catch (Exception e) {
+			System.err.println("Error en seed de productos: " + e.getMessage());
+		}
+	}
+
 }

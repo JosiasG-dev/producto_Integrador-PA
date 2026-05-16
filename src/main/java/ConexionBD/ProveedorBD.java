@@ -11,7 +11,7 @@ public class ProveedorBD {
 
 	public List<Proveedor> obtenerTodos() {
 		List<Proveedor> lista = new ArrayList<>();
-		String sql = "SELECT * FROM proveedores WHERE activo = 1 ORDER BY nombre";
+		String sql = "SELECT * FROM proveedores WHERE activo = 1 ORDER BY id";
 		try (Statement st = Conexion.getConexion().createStatement(); ResultSet rs = st.executeQuery(sql)) {
 			while (rs.next())
 				lista.add(mapear(rs));

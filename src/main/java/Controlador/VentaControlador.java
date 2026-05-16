@@ -30,15 +30,14 @@ public class VentaControlador {
 	public void agregarAlCarrito(Producto p) {
 		for (ItemCarrito item : carrito) {
 			if (item.getProducto().getId().equals(p.getId())) {
-				double delta = p.esPorPieza() ? 1.0 : 0.1;
-				double nuevaCant = item.getCantidad() + delta;
+				double nuevaCant = item.getCantidad() + 1.0;
 				if (nuevaCant > p.getStock()) {
 					javax.swing.JOptionPane.showMessageDialog(null,
 							"Stock insuficiente. Disponible: " + (int) p.getStock(), "Sin stock",
 							javax.swing.JOptionPane.WARNING_MESSAGE);
 					return;
 				}
-				item.incrementar(delta);
+				item.incrementar(1.0);
 				notificarPanel();
 				return;
 			}
@@ -48,7 +47,7 @@ public class VentaControlador {
 					javax.swing.JOptionPane.WARNING_MESSAGE);
 			return;
 		}
-		carrito.add(new ItemCarrito(p, p.esPorPieza() ? 1.0 : 0.1));
+		carrito.add(new ItemCarrito(p, 1.0));
 		notificarPanel();
 	}
 
@@ -60,7 +59,6 @@ public class VentaControlador {
 	public void setCantidad(String productoId, double nuevaCantidad) {
 		for (ItemCarrito item : carrito) {
 			if (item.getProducto().getId().equals(productoId)) {
-				if (item.getProducto().esPorPieza())
 					nuevaCantidad = Math.round(nuevaCantidad);
 				if (nuevaCantidad > item.getProducto().getStock()) {
 					javax.swing.JOptionPane.showMessageDialog(null,
