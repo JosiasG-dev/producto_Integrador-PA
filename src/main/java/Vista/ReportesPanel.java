@@ -8,6 +8,14 @@ import Util.ManejoErrores;
 import java.awt.*;
 import java.io.*;
 import java.text.SimpleDateFormat;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -69,9 +77,9 @@ public class ReportesPanel extends JPanel {
 		btnFiltrar.addActionListener(e -> refrescar());
 		add(btnFiltrar);
 
-		JButton btnExcel = Estilos.botonSecundario("Exportar CSV");
+		JButton btnExcel = Estilos.botonSecundario("Exportar Excel");
 		btnExcel.setBounds(674, 74, 120, 34);
-		btnExcel.addActionListener(e -> exportarCSV());
+		btnExcel.addActionListener(e -> exportarExcel());
 		add(btnExcel);
 
 		JButton btnDevolucion = Estilos.botonPeligro("Devolucion");
@@ -281,35 +289,72 @@ public class ReportesPanel extends JPanel {
 		}
 	}
 
-	private void exportarCSV() {
+	private void exportarExcel() {
 		JFileChooser fc = new JFileChooser();
-		fc.setSelectedFile(new File("ReporteVentas.csv"));
+		fc.setSelectedFile(new File("ReporteVentas.xlsx"));
 		if (fc.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) return;
 		File archivo = fc.getSelectedFile();
 		SimpleDateFormat sdfF = new SimpleDateFormat("dd/MM/yyyy");
 		SimpleDateFormat sdfH = new SimpleDateFormat("HH:mm:ss");
-		try (PrintWriter pw = new PrintWriter(new OutputStreamWriter(new FileOutputStream(archivo), "UTF-8"))) {
-			pw.println("ID Venta,Fecha Venta,Hora,Cajero,Metodo Pago,Total,SKU Producto,Nombre Producto,Cantidad,Precio Unitario,Subtotal");
+		try (Workbook libro = new XSSFWorkbook()) {
+			Sheet hoja = libro.createSheet("Reporte de Ventas");
+			CellStyle estiloEncabezado = libro.createCellStyle();
+			org.apache.poi.ss.usermodel.Font fuenteNegrita = libro.createFont();
+			fuenteNegrita.setBold(true);
+			estiloEncabezado.setFont(fuenteNegrita);
+			estiloEncabezado.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+			estiloEncabezado.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+			String[] columnas = {
+				"ID Venta", "Fecha Venta", "Hora", "Cajero",
+				"Metodo Pago", "Total Venta", "SKU", "Producto",
+				"Cantidad", "Precio Unitario", "Subtotal"
+			};
+			Row fila = hoja.createRow(0);
+			for (int i = 0; i < columnas.length; i++) {
+				Cell celda = fila.createCell(i);
+				celda.setCellValue(columnas[i]);
+				celda.setCellStyle(estiloEncabezado);
+			}
+			int numFila = 1;
 			for (Venta v : ventasFiltradas) {
-				String fechaStr  = sdfF.format(v.getFecha());
-				String horaStr   = sdfH.format(v.getFecha());
+				String fecha = sdfF.format(v.getFecha());
+				String hora  = sdfH.format(v.getFecha());
 				if (v.getItems() == null || v.getItems().isEmpty()) {
-					pw.printf("%d,%s,%s,%s,%s,%.2f,,,,,%n",
-						v.getId(), fechaStr, horaStr, v.getCajero(), v.getMetodoPago(), v.getTotal());
+					Row r = hoja.createRow(numFila++);
+					r.createCell(0).setCellValue(v.getId());
+					r.createCell(1).setCellValue(fecha);
+					r.createCell(2).setCellValue(hora);
+					r.createCell(3).setCellValue(v.getCajero());
+					r.createCell(4).setCellValue(v.getMetodoPago());
+					r.createCell(5).setCellValue(v.getTotal());
 				} else {
 					for (ItemCarrito item : v.getItems()) {
-						pw.printf("%d,%s,%s,%s,%s,%.2f,%s,%s,%.2f,%.2f,%.2f%n",
-							v.getId(), fechaStr, horaStr, v.getCajero(), v.getMetodoPago(), v.getTotal(),
-							item.getProducto().getId(), item.getProducto().getNombre(),
-							item.getCantidad(), item.getProducto().getPrecio(), item.getSubtotal());
+						Row r = hoja.createRow(numFila++);
+						r.createCell(0).setCellValue(v.getId());
+						r.createCell(1).setCellValue(fecha);
+						r.createCell(2).setCellValue(hora);
+						r.createCell(3).setCellValue(v.getCajero());
+						r.createCell(4).setCellValue(v.getMetodoPago());
+						r.createCell(5).setCellValue(v.getTotal());
+						r.createCell(6).setCellValue(item.getProducto().getId());
+						r.createCell(7).setCellValue(item.getProducto().getNombre());
+						r.createCell(8).setCellValue(item.getCantidad());
+						r.createCell(9).setCellValue(item.getProducto().getPrecio());
+						r.createCell(10).setCellValue(item.getSubtotal());
 					}
 				}
 			}
+			for (int i = 0; i < columnas.length; i++) {
+				hoja.autoSizeColumn(i);
+			}
+			try (FileOutputStream salida = new FileOutputStream(archivo)) {
+				libro.write(salida);
+			}
 			ManejoErrores.info(this, "Exportacion exitosa",
-					"Reporte guardado en:\n" + archivo.getAbsolutePath());
-			ManejoErrores.registrarInfo("CSV exportado: " + archivo.getAbsolutePath() + " (" + ventasFiltradas.size() + " ventas)");
+					"Excel guardado en:\n" + archivo.getAbsolutePath());
+			ManejoErrores.registrarInfo("Excel exportado: " + archivo.getAbsolutePath() + " (" + ventasFiltradas.size() + " ventas)");
 		} catch (IOException ex) {
-			ManejoErrores.error(this, "Error al exportar", "No se pudo guardar el archivo.", ex);
+			ManejoErrores.error(this, "Error al exportar", "No se pudo guardar el archivo Excel.", ex);
 		}
 	}
 
