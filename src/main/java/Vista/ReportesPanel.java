@@ -364,9 +364,7 @@ public class ReportesPanel extends JPanel {
 	}
 
 	private void mostrarVentasPorProducto() {
-		// Agrupa items de todas las ventas filtradas por producto
 		Map<String, double[]> resumen = new LinkedHashMap<>();
-		// [0]=unidades, [1]=ingresos
 		for (Venta v : ventasFiltradas) {
 			if (v.getItems() == null) continue;
 			for (ItemCarrito item : v.getItems()) {
@@ -377,7 +375,6 @@ public class ReportesPanel extends JPanel {
 			}
 		}
 
-		// Ordenar por ingresos descendente
 		List<Map.Entry<String, double[]>> lista = new ArrayList<>(resumen.entrySet());
 		lista.sort((a, b) -> Double.compare(b.getValue()[1], a.getValue()[1]));
 
