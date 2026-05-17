@@ -105,7 +105,7 @@ public class VentaControlador {
 					"Importe insuficiente", javax.swing.JOptionPane.WARNING_MESSAGE);
 			return;
 		}
-		Venta venta = new Venta(0, new ArrayList<>(carrito), total, metodoPago, new Date(),
+		Venta venta = new Venta(0, new ArrayList<>(carrito), total, descuento, metodoPago, new Date(),
 				app.getUsuarioActivo().getNombre());
 		app.registrarVenta(venta);
 		double cambio = calcularCambio(montoRecibido);

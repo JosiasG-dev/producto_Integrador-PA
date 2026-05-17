@@ -79,7 +79,6 @@ public class ProductoDialog extends JDialog {
 		cmbUnidad.setBounds(x + 210, 332, 214, fh);
 		panel.add(cmbUnidad);
 
-		// SECCION DE IMAGEN (CORREGIDA SIN DUPLICADOS)
 		panel.add(lbl("Imagen del Producto", x, 380));
 		JButton btnImagen = new JButton("Seleccionar Imagen");
 		btnImagen.setFont(Estilos.FUENTE_XS);
