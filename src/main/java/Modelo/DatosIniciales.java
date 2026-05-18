@@ -162,7 +162,7 @@ public class DatosIniciales {
 
 		return lista;
 	}
-
+	
 	public static List<Usuario> getUsuarios() {
 		List<Usuario> lista = new ArrayList<>();
 		lista.add(new Usuario(1,"admin","admin123","ADMINISTRADOR","Director General",45,"Masculino"));

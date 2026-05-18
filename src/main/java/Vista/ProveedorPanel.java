@@ -101,6 +101,10 @@ public class ProveedorPanel extends JPanel {
 
 		JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		toolbar.setBackground(Estilos.BG_BLANCO);
+		JButton btnBitacora = Estilos.botonSecundario("Bitacora de Entradas");
+		btnBitacora.setPreferredSize(new Dimension(190, 40));
+		btnBitacora.addActionListener(e -> mostrarBitacoraEntradas());
+		toolbar.add(btnBitacora);
 		JButton btnNueva = Estilos.botonExito("+ Generar Pedido");
 		btnNueva.setPreferredSize(new Dimension(170, 40));
 		btnNueva.addActionListener(e -> abrirNuevaOrden());
@@ -208,6 +212,79 @@ public class ProveedorPanel extends JPanel {
 		for (Proveedor p : ctrl.getProveedores())
 			modeloProveedores.addRow(new Object[] { p.getId(), p.getNombre(), p.getContacto(), p.getTelefono(),
 					p.getEmail(), p.getDireccion() });
+	}
+
+	private void mostrarBitacoraEntradas() {
+		List<OrdenCompra> ordenes = ctrl.getOrdenes().stream()
+			.filter(o -> o.getEstado() == OrdenCompra.Estado.RECIBIDO)
+			.collect(java.util.stream.Collectors.toList());
+
+		JDialog dlg = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this),
+				"Bitacora de Entradas de Mercancia", true);
+		dlg.setSize(860, 520);
+		dlg.setLocationRelativeTo(this);
+		dlg.setLayout(null);
+		dlg.getContentPane().setBackground(Estilos.BG_BLANCO);
+
+		JLabel tit = new JLabel("BITACORA DE ENTRADAS DE MERCANCIA");
+		tit.setFont(Estilos.FUENTE_TITULO);
+		tit.setForeground(Estilos.TEXTO_PRINCIPAL);
+		tit.setBounds(20, 14, 820, 30);
+		dlg.add(tit);
+
+		JLabel sub = new JLabel(ordenes.size() + " recepciones registradas");
+		sub.setFont(Estilos.FUENTE_XS);
+		sub.setForeground(Estilos.TEXTO_TENUE);
+		sub.setBounds(20, 46, 820, 16);
+		dlg.add(sub);
+
+		String[] cols = { "Folio", "Proveedor", "Fecha Recepcion", "Tipo Pago", "Total", "Productos Recibidos" };
+		DefaultTableModel modelo = new DefaultTableModel(cols, 0) {
+			@Override public boolean isCellEditable(int r, int c) { return false; }
+		};
+
+		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm");
+		for (OrdenCompra o : ordenes) {
+			String prods = o.getItems().stream()
+				.map(i -> i.getProducto().getNombre() + " x" + (int) i.getCantidadSolicitada())
+				.collect(java.util.stream.Collectors.joining(", "));
+			modelo.addRow(new Object[]{
+				"#" + o.getId(),
+				o.getProveedor().getNombre(),
+				sdf.format(o.getFecha()),
+				o.getTipoPago().name(),
+				String.format("$%.2f", o.getTotal()),
+				prods
+			});
+		}
+		if (ordenes.isEmpty())
+			modelo.addRow(new Object[]{ "-", "Sin recepciones registradas", "-", "-", "-", "-" });
+
+		JTable tabla = new JTable(modelo);
+		tabla.setFont(Estilos.FUENTE_NORMAL);
+		tabla.setRowHeight(38);
+		tabla.setShowGrid(false);
+		tabla.setIntercellSpacing(new Dimension(0, 2));
+		tabla.getTableHeader().setFont(Estilos.FUENTE_XS);
+		tabla.getTableHeader().setBackground(Estilos.BG_ZINC_100);
+		tabla.getColumnModel().getColumn(0).setMaxWidth(60);
+		tabla.getColumnModel().getColumn(2).setMaxWidth(140);
+		tabla.getColumnModel().getColumn(3).setMaxWidth(90);
+		tabla.getColumnModel().getColumn(4).setMaxWidth(90);
+		tabla.getColumnModel().getColumn(5).setPreferredWidth(360);
+
+		JScrollPane scroll = new JScrollPane(tabla);
+		scroll.setBorder(BorderFactory.createLineBorder(Estilos.BORDE));
+		scroll.getViewport().setBackground(Estilos.BG_BLANCO);
+		scroll.setBounds(20, 68, 820, 382);
+		dlg.add(scroll);
+
+		JButton btnCerrar = Estilos.botonPrimario("Cerrar");
+		btnCerrar.setBounds(370, 460, 120, 36);
+		btnCerrar.addActionListener(e -> dlg.dispose());
+		dlg.add(btnCerrar);
+
+		dlg.setVisible(true);
 	}
 
 	public void refrescarOrdenes() {

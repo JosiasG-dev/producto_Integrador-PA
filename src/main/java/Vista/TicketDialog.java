@@ -15,7 +15,7 @@ public class TicketDialog extends JDialog {
 	private JPanel panelTicket;
 
 	public TicketDialog(JFrame parent, Venta venta, ConfiguracionTienda config, double cambio) {
-		this(parent, venta, config, cambio, 0);
+		this(parent, venta, config, cambio, venta.getDescuento());
 	}
 
 	public TicketDialog(JFrame parent, Venta venta, ConfiguracionTienda config, double cambio, double descuento) {
@@ -23,7 +23,7 @@ public class TicketDialog extends JDialog {
 		this.venta = venta;
 		this.config = config;
 		this.cambio = cambio;
-		this.descuento = descuento;
+		this.descuento = venta.getDescuento() > 0 ? venta.getDescuento() : descuento;
 		construir();
 	}
 
@@ -99,18 +99,27 @@ public class TicketDialog extends JDialog {
 		panelTicket.add(sep(y));
 		y += 10;
 
-		double subtotal = venta.getItems().stream().mapToDouble(ItemCarrito::getSubtotal).sum();
-		double aPagar = venta.getTotal();
+		double precioTotal = venta.getItems().stream().mapToDouble(ItemCarrito::getSubtotal).sum();
+		double montoDescuento = descuento;
+		double montoAPagar = venta.getTotal();
 
-		fila(panelTicket, "Subtotal:", String.format("$%.2f", subtotal), y, Estilos.TEXTO_SECUNDARIO);
+		fila(panelTicket, "Precio total de compra:", String.format("$%.2f", precioTotal), y, Estilos.TEXTO_SECUNDARIO);
 		y += 18;
-		if (descuento > 0) {
-			fila(panelTicket, "Descuento:", String.format("-$%.2f", descuento), y, Estilos.EMERALD);
-			y += 18;
-		}
-		fila(panelTicket, "TOTAL A PAGAR:", String.format("$%.2f", aPagar), y, Estilos.TEXTO_PRINCIPAL);
+
+		Color colorDesc = montoDescuento > 0 ? Estilos.EMERALD : Estilos.TEXTO_TENUE;
+		fila(panelTicket, "Monto de descuento:", String.format("-$%.2f", montoDescuento), y, colorDesc);
 		y += 18;
-		fila(panelTicket, "Recibido:", String.format("$%.2f", aPagar + cambio), y, Estilos.TEXTO_SECUNDARIO);
+
+		panelTicket.add(sep(y));
+		y += 10;
+
+		filaGrande(panelTicket, "MONTO A PAGAR:", String.format("$%.2f", montoAPagar), y, Estilos.TEXTO_PRINCIPAL);
+		y += 22;
+
+		panelTicket.add(sep(y));
+		y += 10;
+
+		fila(panelTicket, "Efectivo recibido:", String.format("$%.2f", montoAPagar + cambio), y, Estilos.TEXTO_SECUNDARIO);
 		y += 18;
 		fila(panelTicket, "Cambio:", String.format("$%.2f", cambio), y, Estilos.EMERALD);
 		y += 20;
@@ -183,6 +192,20 @@ public class TicketDialog extends JDialog {
 		val.setForeground(colorValor);
 		val.setHorizontalAlignment(SwingConstants.RIGHT);
 		val.setBounds(200, y, 166, 16);
+		p.add(val);
+	}
+
+	private void filaGrande(JPanel p, String label, String valor, int y, Color colorValor) {
+		JLabel lbl = new JLabel(label);
+		lbl.setFont(Estilos.FUENTE_BOLD);
+		lbl.setForeground(Estilos.TEXTO_PRINCIPAL);
+		lbl.setBounds(14, y, 180, 20);
+		p.add(lbl);
+		JLabel val = new JLabel(valor);
+		val.setFont(new Font("Monospaced", Font.BOLD, 15));
+		val.setForeground(colorValor);
+		val.setHorizontalAlignment(SwingConstants.RIGHT);
+		val.setBounds(180, y, 186, 20);
 		p.add(val);
 	}
 

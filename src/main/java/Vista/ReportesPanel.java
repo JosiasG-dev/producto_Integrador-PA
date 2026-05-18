@@ -101,6 +101,11 @@ public class ReportesPanel extends JPanel {
 		btnReimprimir.addActionListener(e -> reimprimirSeleccionado());
 		add(btnReimprimir);
 
+		JButton btnPorProducto = Estilos.botonSecundario("Ventas por Producto");
+		btnPorProducto.setBounds(1240, 74, 180, 34);
+		btnPorProducto.addActionListener(e -> mostrarVentasPorProducto());
+		add(btnPorProducto);
+
 		lblTotal    = kpiCard("Ingresos",    "$0.00", Estilos.INDIGO,    Color.WHITE,             24,  124);
 		lblNumVentas = kpiCard("Ventas",     "0",     Estilos.BG_BLANCO, Estilos.TEXTO_PRINCIPAL, 204, 124);
 		lblPromedio  = kpiCard("Ticket Prom","$0.00", Estilos.BG_BLANCO, Estilos.TEXTO_PRINCIPAL, 384, 124);
@@ -356,6 +361,83 @@ public class ReportesPanel extends JPanel {
 		} catch (IOException ex) {
 			ManejoErrores.error(this, "Error al exportar", "No se pudo guardar el archivo Excel.", ex);
 		}
+	}
+
+	private void mostrarVentasPorProducto() {
+		Map<String, double[]> resumen = new LinkedHashMap<>();
+		for (Venta v : ventasFiltradas) {
+			if (v.getItems() == null) continue;
+			for (ItemCarrito item : v.getItems()) {
+				String clave = "[" + item.getProducto().getId() + "] " + item.getProducto().getNombre();
+				resumen.merge(clave,
+					new double[]{item.getCantidad(), item.getSubtotal()},
+					(a, b) -> new double[]{a[0] + b[0], a[1] + b[1]});
+			}
+		}
+
+		List<Map.Entry<String, double[]>> lista = new ArrayList<>(resumen.entrySet());
+		lista.sort((a, b) -> Double.compare(b.getValue()[1], a.getValue()[1]));
+
+		JDialog dlg = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this),
+				"Reporte de Ventas por Producto", true);
+		dlg.setSize(700, 520);
+		dlg.setLocationRelativeTo(this);
+		dlg.setLayout(null);
+		dlg.getContentPane().setBackground(Estilos.BG_BLANCO);
+
+		JLabel tit = new JLabel("RANKING DE PRODUCTOS MAS VENDIDOS");
+		tit.setFont(Estilos.FUENTE_TITULO);
+		tit.setForeground(Estilos.TEXTO_PRINCIPAL);
+		tit.setBounds(20, 14, 660, 30);
+		dlg.add(tit);
+
+		JLabel sub = new JLabel("Periodo: " + txtFechaInicio.getText() + "  a  " + txtFechaFin.getText()
+				+ "   |   " + lista.size() + " productos distintos");
+		sub.setFont(Estilos.FUENTE_XS);
+		sub.setForeground(Estilos.TEXTO_TENUE);
+		sub.setBounds(20, 46, 660, 16);
+		dlg.add(sub);
+
+		String[] cols = { "#", "Producto", "Unidades Vendidas", "Ingresos Totales" };
+		DefaultTableModel modelo = new DefaultTableModel(cols, 0) {
+			@Override public boolean isCellEditable(int r, int c) { return false; }
+		};
+		int rank = 1;
+		for (Map.Entry<String, double[]> e : lista) {
+			double[] vals = e.getValue();
+			modelo.addRow(new Object[]{
+				rank++,
+				e.getKey(),
+				String.format("%.0f", vals[0]),
+				String.format("$%.2f", vals[1])
+			});
+		}
+		if (lista.isEmpty())
+			modelo.addRow(new Object[]{ "-", "Sin ventas en el periodo seleccionado", "-", "-" });
+
+		JTable tabla = new JTable(modelo);
+		tabla.setFont(Estilos.FUENTE_NORMAL);
+		tabla.setRowHeight(36);
+		tabla.setShowGrid(false);
+		tabla.setIntercellSpacing(new Dimension(0, 2));
+		tabla.getTableHeader().setFont(Estilos.FUENTE_XS);
+		tabla.getTableHeader().setBackground(Estilos.BG_ZINC_100);
+		tabla.getColumnModel().getColumn(0).setMaxWidth(40);
+		tabla.getColumnModel().getColumn(2).setMaxWidth(140);
+		tabla.getColumnModel().getColumn(3).setMaxWidth(140);
+
+		JScrollPane scroll = new JScrollPane(tabla);
+		scroll.setBorder(BorderFactory.createLineBorder(Estilos.BORDE));
+		scroll.getViewport().setBackground(Estilos.BG_BLANCO);
+		scroll.setBounds(20, 70, 660, 380);
+		dlg.add(scroll);
+
+		JButton btnCerrar = Estilos.botonPrimario("Cerrar");
+		btnCerrar.setBounds(290, 460, 120, 36);
+		btnCerrar.addActionListener(e -> dlg.dispose());
+		dlg.add(btnCerrar);
+
+		dlg.setVisible(true);
 	}
 
 	private JTextField campo(int x, int y, int w, int h) {

@@ -7,6 +7,7 @@ public class Venta {
 	private int id;
 	private List<ItemCarrito> items;
 	private double total;
+	private double descuento;
 	private String metodoPago;
 	private Date fecha;
 	private String cajero;
@@ -15,6 +16,17 @@ public class Venta {
 		this.id = id;
 		this.items = items;
 		this.total = total;
+		this.descuento = 0;
+		this.metodoPago = metodoPago;
+		this.fecha = fecha;
+		this.cajero = cajero;
+	}
+
+	public Venta(int id, List<ItemCarrito> items, double total, double descuento, String metodoPago, Date fecha, String cajero) {
+		this.id = id;
+		this.items = items;
+		this.total = total;
+		this.descuento = descuento;
 		this.metodoPago = metodoPago;
 		this.fecha = fecha;
 		this.cajero = cajero;
@@ -66,6 +78,18 @@ public class Venta {
 
 	public void setCajero(String cajero) {
 		this.cajero = cajero;
+	}
+
+	public double getDescuento() {
+		return descuento;
+	}
+
+	public void setDescuento(double descuento) {
+		this.descuento = descuento;
+	}
+
+	public double getSubtotal() {
+		return Math.round((total + descuento) * 100.0) / 100.0;
 	}
 
 	public int getTotalItems() {
