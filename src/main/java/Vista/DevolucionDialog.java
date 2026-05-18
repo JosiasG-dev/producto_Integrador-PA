@@ -2,7 +2,7 @@ package Vista;
 
 import javax.swing.*;
 import javax.swing.table.*;
-import Controlador.AppControlador;
+import Controlador.ControladorPrincipal;
 import Modelo.*;
 import java.awt.*;
 import java.util.Date;
@@ -10,7 +10,7 @@ import java.util.List;
 
 public class DevolucionDialog extends JDialog {
 
-	private final AppControlador app;
+	private final ControladorPrincipal app;
 	private JTextField txtVentaId;
 	private DefaultTableModel modeloItems;
 	private JTable tablaItems;
@@ -18,7 +18,7 @@ public class DevolucionDialog extends JDialog {
 	private List<ItemCarrito> itemsVenta;
 	private int ventaId = -1;
 
-	public DevolucionDialog(JFrame parent, AppControlador app) {
+	public DevolucionDialog(JFrame parent, ControladorPrincipal app) {
 		super(parent, "Devolucion de Productos", true);
 		this.app = app;
 		construir();

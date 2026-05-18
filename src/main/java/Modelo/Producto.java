@@ -79,6 +79,14 @@ public class Producto {
 	}
 
 	public String getImagenRuta() {
+		if (imagenRuta == null || imagenRuta.trim().isEmpty()) {
+			try {
+				int numericId = Integer.parseInt(id);
+				return "Images/" + numericId + ".jpg";
+			} catch (Exception e) {
+				return "Images/" + id + ".jpg";
+			}
+		}
 		return imagenRuta;
 	}
 

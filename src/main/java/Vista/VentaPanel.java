@@ -375,11 +375,24 @@ public class VentaPanel extends JPanel {
 			return;
 		}
 		try {
-			ImageIcon iconoOriginal = new ImageIcon(ruta);
-			Image img = iconoOriginal.getImage();
-			Image nuevaImg = img.getScaledInstance(218, 170, Image.SCALE_SMOOTH);
-			lblImagenProducto.setIcon(new ImageIcon(nuevaImg));
-			lblImagenProducto.setText("");
+			java.io.File archivo = new java.io.File(ruta);
+			if (!archivo.isAbsolute() || !archivo.exists()) {
+				archivo = new java.io.File(Util.RutaBase.getRaiz(), ruta);
+			}
+			if (archivo.exists()) {
+				java.awt.image.BufferedImage bimg = javax.imageio.ImageIO.read(archivo);
+				if (bimg != null) {
+					Image img = bimg.getScaledInstance(218, 170, Image.SCALE_SMOOTH);
+					lblImagenProducto.setIcon(new ImageIcon(img));
+					lblImagenProducto.setText("");
+				} else {
+					lblImagenProducto.setIcon(null);
+					lblImagenProducto.setText("SIN FOTO");
+				}
+			} else {
+				lblImagenProducto.setIcon(null);
+				lblImagenProducto.setText("SIN FOTO");
+			}
 		} catch (Exception e) {
 			lblImagenProducto.setText("ERROR CARGA");
 		}

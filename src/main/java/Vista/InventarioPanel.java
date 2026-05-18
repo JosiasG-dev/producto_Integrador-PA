@@ -8,6 +8,7 @@ import Util.ManejoErrores;
 import java.awt.*;
 import java.util.List;
 import java.io.File;
+import Util.RutaBase;
 
 public class InventarioPanel extends JPanel {
 
@@ -181,7 +182,10 @@ public class InventarioPanel extends JPanel {
 
 		String[] cols = { "SKU", "Nombre", "Categoria", "Stock Actual", "Stock Minimo", "Faltante" };
 		DefaultTableModel modelo = new DefaultTableModel(cols, 0) {
-			@Override public boolean isCellEditable(int r, int c) { return false; }
+			@Override
+			public boolean isCellEditable(int r, int c) {
+				return false;
+			}
 		};
 		JTable tabla = new JTable(modelo);
 		tabla.setFont(Estilos.FUENTE_NORMAL);
@@ -215,10 +219,10 @@ public class InventarioPanel extends JPanel {
 		for (Producto p : bajos) {
 			double faltante = Math.max(0, p.getStockMinimo() - p.getStock());
 			modelo.addRow(new Object[] {
-				p.getId(), p.getNombre(), p.getCategoria(),
-				String.format("%.1f", p.getStock()),
-				String.format("%.0f", p.getStockMinimo()),
-				String.format("%.1f", faltante)
+					p.getId(), p.getNombre(), p.getCategoria(),
+					String.format("%.1f", p.getStock()),
+					String.format("%.0f", p.getStockMinimo()),
+					String.format("%.1f", faltante)
 			});
 		}
 		if (bajos.isEmpty())
@@ -246,6 +250,8 @@ public class InventarioPanel extends JPanel {
 	}
 
 	public static class ImagenRenderer extends DefaultTableCellRenderer {
+		private final java.util.Map<String, ImageIcon> cache = new java.util.HashMap<>();
+
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
 				int row, int column) {
@@ -254,19 +260,41 @@ public class InventarioPanel extends JPanel {
 
 			if (value != null && !value.toString().isEmpty()) {
 				String ruta = value.toString();
-				File archivo = new File(ruta);
-
-				if (archivo.exists()) {
-					try {
-						ImageIcon icono = new ImageIcon(archivo.getAbsolutePath());
-						Image img = icono.getImage().getScaledInstance(45, 45, Image.SCALE_SMOOTH);
-						lbl.setIcon(new ImageIcon(img));
+				if (cache.containsKey(ruta)) {
+					ImageIcon icon = cache.get(ruta);
+					if (icon != null) {
+						lbl.setIcon(icon);
 						lbl.setText("");
-					} catch (Exception e) {
-						lbl.setText("Error");
+					} else {
+						lbl.setText("Sin foto");
 					}
 				} else {
-					lbl.setText("No encontrada");
+					File archivo = new File(ruta);
+					if (!archivo.isAbsolute() || !archivo.exists()) {
+						String base = Util.RutaBase.getRaiz();
+						archivo = new File(base, ruta);
+					}
+					if (archivo.exists()) {
+						try {
+							java.awt.image.BufferedImage bimg = javax.imageio.ImageIO.read(archivo);
+							if (bimg != null) {
+								Image img = bimg.getScaledInstance(45, 45, Image.SCALE_SMOOTH);
+								ImageIcon finalIcon = new ImageIcon(img);
+								cache.put(ruta, finalIcon);
+								lbl.setIcon(finalIcon);
+								lbl.setText("");
+							} else {
+								cache.put(ruta, null);
+								lbl.setText("Sin foto");
+							}
+						} catch (Exception e) {
+							cache.put(ruta, null);
+							lbl.setText("Sin foto");
+						}
+					} else {
+						cache.put(ruta, null);
+						lbl.setText("Sin foto");
+					}
 				}
 			} else {
 				lbl.setText("Sin foto");
@@ -280,3 +308,11 @@ public class InventarioPanel extends JPanel {
 		}
 	}
 }
+
+		
+			
+			
+		
+	
+
+

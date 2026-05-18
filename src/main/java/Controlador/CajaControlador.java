@@ -7,10 +7,10 @@ import Vista.CajaPanel;
 
 public class CajaControlador {
 
-	private final AppControlador app;
+	private final ControladorPrincipal app;
 	private CajaPanel panel;
 
-	public CajaControlador(AppControlador app) {
+	public CajaControlador(ControladorPrincipal app) {
 		this.app = app;
 	}
 

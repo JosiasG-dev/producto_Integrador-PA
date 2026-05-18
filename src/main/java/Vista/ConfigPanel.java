@@ -2,17 +2,17 @@ package Vista;
 
 import javax.swing.*;
 
-import Controlador.AppControlador;
+import Controlador.ControladorPrincipal;
 import Modelo.ConfiguracionTienda;
 
 import java.awt.*;
 
 public class ConfigPanel extends JPanel {
 
-	private final AppControlador app;
+	private final ControladorPrincipal app;
 	private JTextField txtNombre, txtSucursal, txtRFC;
 
-	public ConfigPanel(AppControlador app) {
+	public ConfigPanel(ControladorPrincipal app) {
 		this.app = app;
 		setLayout(new BorderLayout(0, 16));
 		setBackground(Estilos.BG_CLARO);

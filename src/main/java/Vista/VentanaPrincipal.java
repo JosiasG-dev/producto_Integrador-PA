@@ -10,7 +10,7 @@ import java.awt.*;
 
 public class VentanaPrincipal extends JFrame {
 
-	private final AppControlador app;
+	private final ControladorPrincipal app;
 	private final VentaControlador ventaCtrl;
 	private final InventarioControlador invCtrl;
 	private final CajaControlador cajaCtrl;
@@ -38,7 +38,7 @@ public class VentanaPrincipal extends JFrame {
 	private static final String TAB_USUARIOS = "usuarios";
 	private static final String TAB_CONFIG = "configuracion";
 
-	public VentanaPrincipal(AppControlador app, VentaControlador ventaCtrl, InventarioControlador invCtrl,
+	public VentanaPrincipal(ControladorPrincipal app, VentaControlador ventaCtrl, InventarioControlador invCtrl,
 			CajaControlador cajaCtrl, ProveedorControlador provCtrl, UsuarioControlador usuCtrl) {
 		this.app = app;
 		this.ventaCtrl = ventaCtrl;

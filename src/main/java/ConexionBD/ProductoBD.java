@@ -150,4 +150,18 @@ public class ProductoBD {
 		p.setStockMinimo(rs.getDouble("stock_minimo"));
 		return p;
 	}
+	public void actualizarImagenes(java.util.List<Modelo.Producto> productos) {
+		String sql = "UPDATE productos SET imagen_ruta=? WHERE id=? AND (imagen_ruta IS NULL OR imagen_ruta='')";
+		try (PreparedStatement ps = Conexion.getConexion().prepareStatement(sql)) {
+			for (Modelo.Producto p : productos) {
+				ps.setString(1, p.getImagenRuta());
+				ps.setString(2, p.getId());
+				ps.addBatch();
+			}
+			ps.executeBatch();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
 }

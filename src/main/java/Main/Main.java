@@ -23,7 +23,7 @@ public class Main {
                 System.exit(0);
             }
 
-            AppControlador controlador = new AppControlador();
+            ControladorPrincipal controlador = new ControladorPrincipal();
             controlador.iniciar();
         });
     }

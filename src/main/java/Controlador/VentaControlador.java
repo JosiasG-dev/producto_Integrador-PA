@@ -8,12 +8,12 @@ import java.util.List;
 
 public class VentaControlador {
 
-	private final AppControlador app;
+	private final ControladorPrincipal app;
 	private VentaPanel panel;
 	private List<ItemCarrito> carrito = new ArrayList<>();
 	private double descuento = 0;
 
-	public VentaControlador(AppControlador app) {
+	public VentaControlador(ControladorPrincipal app) {
 		this.app = app;
 	}
 

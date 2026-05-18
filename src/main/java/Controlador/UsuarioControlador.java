@@ -7,10 +7,10 @@ import Vista.UsuariosPanel;
 
 public class UsuarioControlador {
 
-	private final AppControlador app;
+	private final ControladorPrincipal app;
 	private UsuariosPanel panel;
 
-	public UsuarioControlador(AppControlador app) {
+	public UsuarioControlador(ControladorPrincipal app) {
 		this.app = app;
 	}
 

@@ -2,7 +2,7 @@ package Vista;
 
 import javax.swing.*;
 import javax.swing.table.*;
-import Controlador.AppControlador;
+import Controlador.ControladorPrincipal;
 import Modelo.*;
 import Util.ManejoErrores;
 import java.awt.*;
@@ -22,14 +22,14 @@ import java.util.stream.Collectors;
 
 public class ReportesPanel extends JPanel {
 
-	private final AppControlador app;
+	private final ControladorPrincipal app;
 	private JLabel lblTotal, lblNumVentas, lblPromedio;
 	private DefaultTableModel modeloVentas;
 	private JTable tablaVentas;
 	private JTextField txtFechaInicio, txtFechaFin, txtFiltroProducto;
 	private List<Venta> ventasFiltradas = new ArrayList<>();
 
-	public ReportesPanel(AppControlador app) {
+	public ReportesPanel(ControladorPrincipal app) {
 		this.app = app;
 		setLayout(null);
 		setBackground(Estilos.BG_CLARO);

@@ -8,7 +8,7 @@ import Vista.*;
 import java.util.Date;
 import java.util.List;
 
-public class AppControlador {
+public class ControladorPrincipal {
 
 	private final UsuarioBD usuarioBD = new UsuarioBD();
 	private final ProductoBD productoBD = new ProductoBD();
@@ -41,6 +41,8 @@ public class AppControlador {
 		if (guardada != null) {
 			this.config = guardada;
 		}
+
+		cargarProductosIniciales();
 
 		loginVista = new LoginVista(this);
 		loginVista.mostrar();
@@ -259,18 +261,25 @@ public class AppControlador {
 	
 	private void cargarProductosIniciales() {
 		try {
-			List<Modelo.Producto> existentes = productoBD.obtenerTodos();
-			if (existentes.size() < 50) {
-				List<Modelo.Producto> productosBase = Modelo.DatosIniciales.getProductos();
-				int total = 0;
-				for (Modelo.Producto p : productosBase) {
-					if (productoBD.buscarPorId(p.getId()) == null) {
-						productoBD.insertar(p);
-						total++;
+			List<Modelo.Producto> productosBase = Modelo.DatosIniciales.getProductos();
+			int insertados = 0;
+			int actualizados = 0;
+			for (Modelo.Producto p : productosBase) {
+				Modelo.Producto existente = productoBD.buscarPorId(p.getId());
+				if (existente == null) {
+					productoBD.insertar(p);
+					insertados++;
+				} else {
+					if (!existente.getNombre().equals(p.getNombre()) || 
+						existente.getPrecio() != p.getPrecio() || 
+						!existente.getCategoria().equals(p.getCategoria())) {
+						p.setStock(existente.getStock());
+						productoBD.actualizar(p);
+						actualizados++;
 					}
 				}
-				System.out.println("Seed: " + total + " productos productosBase total.");
 			}
+			System.out.println("Seed finalizado. Insertados: " + insertados + ", Actualizados: " + actualizados);
 		} catch (Exception e) {
 			System.err.println("Error en seed de productos: " + e.getMessage());
 		}

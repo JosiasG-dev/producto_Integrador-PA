@@ -8,10 +8,10 @@ import Vista.ProveedorPanel;
 
 public class ProveedorControlador {
 
-	private final AppControlador app;
+	private final ControladorPrincipal app;
 	private ProveedorPanel panel;
 
-	public ProveedorControlador(AppControlador app) {
+	public ProveedorControlador(ControladorPrincipal app) {
 		this.app = app;
 	}
 

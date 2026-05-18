@@ -7,10 +7,10 @@ import Vista.InventarioPanel;
 
 public class InventarioControlador {
 
-	private final AppControlador app;
+	private final ControladorPrincipal app;
 	private InventarioPanel panel;
 
-	public InventarioControlador(AppControlador app) {
+	public InventarioControlador(ControladorPrincipal app) {
 		this.app = app;
 	}
 

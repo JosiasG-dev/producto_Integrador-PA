@@ -6,6 +6,7 @@ import Modelo.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import Util.RutaBase;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
@@ -92,14 +93,11 @@ public class ProductoDialog extends JDialog {
 
 			if (r == JFileChooser.APPROVE_OPTION) {
 				File archivoOrigen = selector.getSelectedFile();
-				File carpetaDestino = new File("images");
-				if (!carpetaDestino.exists()) {
-					carpetaDestino.mkdir();
-				}
+				File carpetaDestino = RutaBase.getImages();
 				File archivoDestino = new File(carpetaDestino, archivoOrigen.getName());
 				try {
 					Files.copy(archivoOrigen.toPath(), archivoDestino.toPath(), StandardCopyOption.REPLACE_EXISTING);
-					this.rutaImagen = "images/" + archivoOrigen.getName();
+					this.rutaImagen = "Images/" + archivoOrigen.getName();
 					btnImagen.setText("✅ " + archivoOrigen.getName());
 				} catch (IOException ex) {
 					ex.printStackTrace();

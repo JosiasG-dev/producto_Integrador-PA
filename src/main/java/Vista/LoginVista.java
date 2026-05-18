@@ -1,20 +1,20 @@
 package Vista;
 
 import javax.swing.*;
-import Controlador.AppControlador;
+import Controlador.ControladorPrincipal;
 import Modelo.Usuario;
 import java.awt.*;
 import java.awt.event.*;
 
 public class LoginVista {
 
-	private final AppControlador app;
+	private final ControladorPrincipal app;
 	private JFrame frame;
 	private JTextField txtUsuario;
 	private JPasswordField txtPassword;
 	private JLabel lblError;
 
-	public LoginVista(AppControlador app) {
+	public LoginVista(ControladorPrincipal app) {
 		this.app = app;
 		construir();
 	}

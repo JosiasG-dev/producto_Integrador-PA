@@ -1,0 +1,151 @@
+ID	Producto	Precio Estimado (MXN)	Categoría
+1	Arroz Verde Valle 1kg	$36.00	Despensa Basica
+2	Frijol Negro Isadora 500g	$32.00	Despensa Basica
+3	Azucar Zulka 1kg	$38.00	Despensa Basica
+4	Aceite Nutrioli 1L	$45.00	Despensa Basica
+5	Sal La Fina 1kg	$21.00	Despensa Basica
+6	Harina Maseca 1kg	$28.00	Despensa Basica
+7	Pasta Barilla Spaghetti 500g	$22.00	Despensa Basica
+8	Sopa Maruchan Camaron	$17.00	Despensa Basica
+9	Lentejas La Merced 500g	$34.00	Despensa Basica
+10	Avena Quaker 500g	$35.00	Despensa Basica
+11	Vinagre Clemente Jacques 500mL	$20.00	Despensa Basica
+12	Canela Entera McCormick 30g	$29.00	Despensa Basica
+13	Consome de Pollo Knorr 180g	$39.00	Despensa Basica
+14	Chile Guajillo 100g	$35.00	Despensa Basica
+15	Maicena 250g	$24.00	Despensa Basica
+16	Cafe Nescafe Clasico 135g	$95.00	Despensa Basica
+17	Te Lipton 25 sobres	$28.00	Despensa Basica
+18	Fideo Corto La Moderna 200g	$11.00	Despensa Basica
+19	Semola Tres Generaciones 400g	$26.00	Despensa Basica
+20	Polvo para Hornear Royal 80g	$22.00	Despensa Basica
+21	Leche Lala Entera 1L	$28.00	Lacteos y Huevo
+22	Leche Alpura 1L	$27.00	Lacteos y Huevo
+23	Huevo San Juan 1kg	$52.00	Lacteos y Huevo
+24	Crema Lala 200mL	$21.00	Lacteos y Huevo
+25	Queso Manchego Lala 400g	$98.00	Lacteos y Huevo
+26	Yogurt Danone Natural 1kg	$49.00	Lacteos y Huevo
+27	Mantequilla Lala 90g	$23.00	Lacteos y Huevo
+28	Leche Condensada Nestle 397g	$30.00	Despensa Basica
+29	Queso Panela Covadonga 400g	$76.00	Lacteos y Huevo
+30	Leche Evaporada Carnation 360mL	$22.00	Despensa Basica
+31	Yogurt Yoplait Fresa 150g	$12.00	Lacteos y Huevo
+32	Crema Acida Sello Rojo 250mL	$24.00	Lacteos y Huevo
+33	Jocoque Seco Lala 190g	$42.00	Lacteos y Huevo
+34	Requeson Dos Pinos 250g	$38.00	Lacteos y Huevo
+35	Leche de Coco Goya 400mL	$45.00	Despensa Basica
+36	Coca Cola 600mL	$19.00	Bebidas y Liquidos
+37	Pepsi 600mL	$17.00	Bebidas y Liquidos
+38	Sprite 600mL	$17.00	Bebidas y Liquidos
+39	Fanta Naranja 600mL	$17.00	Bebidas y Liquidos
+40	Agua Bonafont 1L	$16.00	Bebidas y Liquidos
+41	Agua Ciel 1.5L	$18.00	Bebidas y Liquidos
+42	Jugo Del Valle Mango 1L	$26.00	Bebidas y Liquidos
+43	Jugo Jumex Durazno 1L	$26.00	Bebidas y Liquidos
+44	Electrolit Fresa Kiwi 625mL	$28.50	Bebidas y Liquidos
+45	Gatorade Naranja 1L	$29.00	Bebidas y Liquidos
+46	Red Bull 250mL	$52.00	Bebidas y Liquidos
+47	Cafe Andatti Capuchino 250mL	$24.00	Bebidas y Liquidos
+48	Arizona Te Verde 680mL	$18.00	Bebidas y Liquidos
+49	Powerade Mora Azul 1L	$28.00	Bebidas y Liquidos
+50	Sidral Mundet 600mL	$17.00	Bebidas y Liquidos
+51	Boing Guayaba 500mL	$15.00	Bebidas y Liquidos
+52	Agua Mineral Topo Chico 600mL	$22.00	Bebidas y Liquidos
+53	Sangria Senorial 355mL	$14.00	Bebidas y Liquidos
+54	Coca Cola Light 600mL	$19.00	Bebidas y Liquidos
+55	Seven Up 600mL	$17.00	Bebidas y Liquidos
+56	Sabritas Original 45g	$22.00	Botanas y Dulces
+57	Doritos Nacho 62g	$24.00	Botanas y Dulces
+58	Cheetos Torciditos 52g	$18.00	Botanas y Dulces
+59	Ruffles Queso 45g	$23.00	Botanas y Dulces
+60	Takis Fuego 56g	$22.00	Botanas y Dulces
+61	Galletas Oreo 154g	$24.00	Botanas y Dulces
+62	Galletas Maria Gamesa 170g	$21.00	Botanas y Dulces
+63	Chokis 76g	$19.00	Botanas y Dulces
+64	Panditas Ricolino 100g	$26.00	Botanas y Dulces
+65	Chocolate Carlos V 18g	$10.00	Botanas y Dulces
+66	Paleta Payaso Ricolino	$22.00	Botanas y Dulces
+67	Mazapan de la Rosa 28g	$8.00	Botanas y Dulces
+68	Bubulubu Marinela	$14.00	Botanas y Dulces
+69	Pelon Pelo Rico 35g	$12.00	Botanas y Dulces
+70	Mamut Marinela	$11.00	Botanas y Dulces
+71	Duvalin Avellana 30g	$8.00	Botanas y Dulces
+72	Rockaleta 24g	$7.00	Botanas y Dulces
+73	Skwinkles Salsagheti 30g	$14.00	Botanas y Dulces
+74	Gansito Marinela	$17.00	Botanas y Dulces
+75	Pingüinos Marinela	$23.00	Botanas y Dulces
+76	Jabón Zote Blanco 400g	$24.00	Cuidado del Hogar
+77	Detergente Roma 1kg	$42.00	Cuidado del Hogar
+78	Suavitel Fresca Primavera 850mL	$38.00	Cuidado del Hogar
+79	Cloralex 950mL	$22.00	Cuidado del Hogar
+80	Fabuloso Lavanda 1L	$31.00	Cuidado del Hogar
+81	Papel Higienico Regio 4 rollos	$35.00	Cuidado del Hogar
+82	Servilletas Pétalo 250 hojas	$32.00	Cuidado del Hogar
+83	Esponja Scotch Brite	$19.00	Cuidado del Hogar
+84	Limpiador Pinol 500mL	$21.00	Cuidado del Hogar
+85	Jabón Axion Limon 750mL	$45.00	Cuidado del Hogar
+86	Bolsa Basura Biodegradable 10 pzas	$28.00	Cuidado del Hogar
+87	Toallas Humedas Huggies 48 pzas	$35.00	Cuidado del Hogar (o Bebés)
+88	Limpiavidrios Windex 500mL	$48.00	Cuidado del Hogar
+89	Aromatizante Glade 400mL	$55.00	Cuidado del Hogar
+90	Detergente Ariel 2kg	$89.00	Cuidado del Hogar
+91	Shampoo Pantene 400mL	$68.00	Farmacia y Cuidado Personal
+92	Pasta Dental Colgate 100mL	$34.00	Farmacia y Cuidado Personal
+93	Cepillo Dental Oral-B	$27.00	Farmacia y Cuidado Personal
+94	Desodorante Axe 150mL	$59.00	Farmacia y Cuidado Personal
+95	Papel Kleenex 90 hojas	$24.00	Farmacia y Cuidado Personal
+96	Rastrillo Gillette Prestobarba	$22.00	Farmacia y Cuidado Personal
+97	Jabón Dove 90g	$21.00	Farmacia y Cuidado Personal
+98	Enjuague Bucal Listerine 500mL	$72.00	Farmacia y Cuidado Personal
+99	Talco Mennen 100g	$32.00	Farmacia y Cuidado Personal
+100	Crema Nivea 200mL	$65.00	Farmacia y Cuidado Personal
+101	Toallas Sanitarias Saba 10 pzas	$30.00	Farmacia y Cuidado Personal
+102	Shampoo Head & Shoulders 375mL	$74.00	Farmacia y Cuidado Personal
+103	Gel Ego 250mL	$28.00	Farmacia y Cuidado Personal
+104	Protector Labial Labello	$42.00	Farmacia y Cuidado Personal
+105	Algodon Aurrera 100g	$20.00	Farmacia y Cuidado Personal
+106	Manzana Roja 1kg	$45.00	Frutas y Verduras
+107	Platano Chiapas 1kg	$24.00	Frutas y Verduras
+108	Naranja Valencia 1kg	$22.00	Frutas y Verduras
+109	Jitomate Saladet 1kg	$32.00	Frutas y Verduras
+110	Cebolla Blanca 1kg	$28.00	Frutas y Verduras
+111	Papa Blanca 1kg	$38.00	Frutas y Verduras
+112	Zanahoria 1kg	$18.00	Frutas y Verduras
+113	Aguacate Hass 1kg	$75.00	Frutas y Verduras
+114	Limón sin semilla 1kg	$34.00	Frutas y Verduras
+115	Chile Jalapeño 500g	$16.00	Frutas y Verduras
+116	Pepino Verde 1kg	$26.00	Frutas y Verduras
+117	Lechuga Romana pieza	$20.00	Frutas y Verduras
+118	Espinaca Bolsa 250g	$22.00	Frutas y Verduras
+119	Uva Roja 500g	$38.00	Frutas y Verduras
+120	Fresa Charola 454g	$49.00	Frutas y Verduras
+121	Atún Dolores Agua 140g	$22.00	Despensa Basica
+122	Sardinas Guaymex 425g	$36.00	Despensa Basica
+123	Salchicha Fud 500g	$48.00	Carnes y Salchichoneria
+124	Jamón Virginia Fud 250g	$54.00	Carnes y Salchichoneria
+125	Nuggets Tyson 500g	$85.00	Congelados / Carnes
+126	Hamburguesa Sukarne 720g	$115.00	Congelados / Carnes
+127	Pechuga de Pollo Bachoco 1kg	$140.00	Carnes y Salchichoneria
+128	Carne Molida Sukarne 500g	$85.00	Carnes y Salchichoneria
+129	Chorizo Kir 250g	$32.00	Carnes y Salchichoneria
+130	Tocino Fud 250g	$68.00	Carnes y Salchichoneria
+131	Helado Holanda Vainilla 1L	$75.00	Congelados / Dulces
+132	Pizza Congelada Delimex	$89.00	Congelados
+133	Verduras Mixtas La Huerta 500g	$34.00	Congelados / Frutas y Verduras
+134	Papas Congeladas McCain 1kg	$78.00	Congelados
+135	Nuggets Bachoco 400g	$68.00	Congelados / Carnes
+136	Aspirina 100 tabletas	$45.00	Farmacia y Cuidado Personal
+137	Paracetamol 500mg 20 tabs	$20.00	Farmacia y Cuidado Personal
+138	Curitas Nexcare 20 pzas	$28.00	Farmacia y Cuidado Personal
+139	Alcohol Antiseptico Jaloma 500mL	$25.00	Farmacia y Cuidado Personal
+140	Vick Vaporub 50g	$65.00	Farmacia y Cuidado Personal
+141	Termometro Digital	$79.00	Farmacia y Cuidado Personal
+142	Gel Antibacterial Escudo 250mL	$26.00	Farmacia y Cuidado Personal
+143	Agua Oxigenada 100mL	$15.00	Farmacia y Cuidado Personal
+144	Pomada Vitacilina 28g	$34.00	Farmacia y Cuidado Personal
+145	Gasas Esteriles 10 pzas	$22.00	Farmacia y Cuidado Personal
+146	Crema Ponds Clarant B3 200g	$95.00	Farmacia y Cuidado Personal
+147	Protector Solar Banana Boat SPF50	$240.00	Farmacia y Cuidado Personal
+148	Cotonetes Jumbo 100 pzas	$18.00	Farmacia y Cuidado Personal
+149	Isodine Bucofaringeo 240mL	$85.00	Farmacia y Cuidado Personal
+150	Crema Barba Gillette 175mL	$69.00	Farmacia y Cuidado Personal
