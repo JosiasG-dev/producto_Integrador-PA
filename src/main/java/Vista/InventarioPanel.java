@@ -35,14 +35,42 @@ public class InventarioPanel extends JPanel {
 		titulo.setBounds(24, 16, 600, 30);
 		add(titulo);
 
-		JButton btnBajoStock = Estilos.botonSecundario("Ver Bajo Stock");
-		btnBajoStock.setBounds(640, 14, 148, 36);
+		if (usuarioActivo.esAdmin()) {
+			JButton btnDevolver = Estilos.botonPeligro("Devolver");
+			btnDevolver.setBounds(450, 14, 90, 36);
+			btnDevolver.addActionListener(e -> {
+				int row = tabla.getSelectedRow();
+				if (row < 0) {
+					JOptionPane.showMessageDialog(this, "Seleccione un producto de la tabla");
+					return;
+				}
+				String id = (String) modeloTabla.getValueAt(row, 0);
+				new DevolucionProveedorDialog(SwingUtilities.getWindowAncestor(this), ctrl.buscarPorId(id), ctrl).setVisible(true);
+			});
+			add(btnDevolver);
+
+			JButton btnEntrada = Estilos.botonSecundario("Entrada");
+			btnEntrada.setBounds(550, 14, 90, 36);
+			btnEntrada.addActionListener(e -> {
+				int row = tabla.getSelectedRow();
+				if (row < 0) {
+					JOptionPane.showMessageDialog(this, "Seleccione un producto de la tabla");
+					return;
+				}
+				String id = (String) modeloTabla.getValueAt(row, 0);
+				new EntradaRapidaDialog(SwingUtilities.getWindowAncestor(this), ctrl.buscarPorId(id), ctrl).setVisible(true);
+			});
+			add(btnEntrada);
+		}
+
+		JButton btnBajoStock = Estilos.botonSecundario("Bajo Stock");
+		btnBajoStock.setBounds(650, 14, 130, 36);
 		btnBajoStock.addActionListener(e -> mostrarBajoStock());
 		add(btnBajoStock);
 
 		if (usuarioActivo.esAdmin()) {
 			JButton btnNuevo = Estilos.botonPrimario("+ Nuevo Item");
-			btnNuevo.setBounds(798, 14, 130, 36);
+			btnNuevo.setBounds(790, 14, 130, 36);
 			btnNuevo.addActionListener(e -> abrirFormulario(null));
 			add(btnNuevo);
 		}

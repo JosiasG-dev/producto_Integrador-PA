@@ -154,7 +154,7 @@ public class VentaPanel extends JPanel {
 		lblTotal.setBounds(16, 34, 218, 46);
 		panelCobro.add(lblTotal);
 
-		JLabel lblDescuento = new JLabel("DESCUENTO ($)");
+		JLabel lblDescuento = new JLabel("DESCUENTO ($ o %)");
 		lblDescuento.setFont(Estilos.FUENTE_XS);
 		lblDescuento.setForeground(new Color(113, 113, 122));
 		lblDescuento.setBounds(16, 90, 218, 14);
@@ -252,8 +252,16 @@ public class VentaPanel extends JPanel {
 
 	private void aplicarDescuento() {
 		try {
-			ctrl.setDescuento(Double.parseDouble(txtDescuento.getText().trim()));
+			String val = txtDescuento.getText().trim();
+			if (val.endsWith("%")) {
+				double porcentaje = Double.parseDouble(val.replace("%", "").trim());
+				double subtotal = ctrl.calcularSubtotal();
+				ctrl.setDescuento(subtotal * (porcentaje / 100.0));
+			} else {
+				ctrl.setDescuento(Double.parseDouble(val));
+			}
 		} catch (NumberFormatException ignored) {
+			ctrl.setDescuento(0);
 		}
 	}
 

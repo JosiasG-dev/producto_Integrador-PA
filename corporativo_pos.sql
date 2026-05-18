@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS proveedores (
 CREATE TABLE IF NOT EXISTS ventas (
     id          INT AUTO_INCREMENT PRIMARY KEY,
     total       DECIMAL(10,2) NOT NULL,
+    descuento   DECIMAL(10,2) DEFAULT 0,
     metodo_pago VARCHAR(30)   NOT NULL DEFAULT 'Efectivo',
     fecha       DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
     cajero      VARCHAR(100)  NOT NULL
@@ -338,5 +339,7 @@ TRUNCATE TABLE productos;
 
 -- Volver a activar la revisión de llaves foráneas
 SET FOREIGN_KEY_CHECKS = 1;
+
+ALTER TABLE ventas ADD COLUMN descuento DECIMAL(10,2) DEFAULT 0 AFTER total;
 
 

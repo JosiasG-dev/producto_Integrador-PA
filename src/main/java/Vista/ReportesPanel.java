@@ -270,7 +270,7 @@ public class ReportesPanel extends JPanel {
 			return;
 		}
 		JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
-		TicketDialog dlg = new TicketDialog(frame, venta, app.getConfig(), 0);
+		TicketDialog dlg = new TicketDialog(frame, venta, app.getConfig(), 0, venta.getTotal());
 		ManejoErrores.registrarInfo("Reimpresion de ticket #" + venta.getId());
 		dlg.mostrar();
 	}

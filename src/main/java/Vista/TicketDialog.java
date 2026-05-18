@@ -12,17 +12,19 @@ public class TicketDialog extends JDialog {
 	private final ConfiguracionTienda config;
 	private final double cambio;
 	private final double descuento;
+	private final double efectivoRecibido;
 	private JPanel panelTicket;
 
-	public TicketDialog(JFrame parent, Venta venta, ConfiguracionTienda config, double cambio) {
-		this(parent, venta, config, cambio, venta.getDescuento());
+	public TicketDialog(JFrame parent, Venta venta, ConfiguracionTienda config, double cambio, double efectivoRecibido) {
+		this(parent, venta, config, cambio, venta.getDescuento(), efectivoRecibido);
 	}
 
-	public TicketDialog(JFrame parent, Venta venta, ConfiguracionTienda config, double cambio, double descuento) {
+	public TicketDialog(JFrame parent, Venta venta, ConfiguracionTienda config, double cambio, double descuento, double efectivoRecibido) {
 		super(parent, "Ticket de Venta", true);
 		this.venta = venta;
 		this.config = config;
 		this.cambio = cambio;
+		this.efectivoRecibido = efectivoRecibido;
 		this.descuento = venta.getDescuento() > 0 ? venta.getDescuento() : descuento;
 		construir();
 	}
@@ -63,7 +65,7 @@ public class TicketDialog extends JDialog {
 		y += 14;
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		panelTicket.add(centrado(sdf.format(venta.getFecha()), Estilos.FUENTE_XS, y));
+		panelTicket.add(centrado(sdf.format(new java.util.Date()), Estilos.FUENTE_XS, y));
 		y += 16;
 		panelTicket.add(centrado("Cajero: " + venta.getCajero().toUpperCase(), Estilos.FUENTE_XS, y));
 		y += 16;
@@ -119,7 +121,7 @@ public class TicketDialog extends JDialog {
 		panelTicket.add(sep(y));
 		y += 10;
 
-		fila(panelTicket, "Efectivo recibido:", String.format("$%.2f", montoAPagar + cambio), y, Estilos.TEXTO_SECUNDARIO);
+		fila(panelTicket, "Efectivo recibido:", String.format("$%.2f", efectivoRecibido), y, Estilos.TEXTO_SECUNDARIO);
 		y += 18;
 		fila(panelTicket, "Cambio:", String.format("$%.2f", cambio), y, Estilos.EMERALD);
 		y += 20;

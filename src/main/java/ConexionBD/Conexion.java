@@ -65,6 +65,7 @@ public class Conexion {
 					}
 					System.out.println("Conexion con SQL Server establecida");
 				}
+				asegurarColumnas();
 			}
 		} catch (ClassNotFoundException e) {
 			System.err.println("Driver no encontrado: " + e.getMessage());
@@ -88,5 +89,23 @@ public class Conexion {
 	}
 
 	private Conexion() {
+	}
+
+	private static void asegurarColumnas() {
+		try {
+			if (instancia != null && !instancia.isClosed()) {
+				java.sql.Statement st = instancia.createStatement();
+				String sql;
+				if (motorActual == TipoMotor.MYSQL) {
+					sql = "ALTER TABLE ventas ADD COLUMN descuento DECIMAL(10,2) DEFAULT 0 AFTER total";
+				} else {
+					sql = "ALTER TABLE ventas ADD descuento DECIMAL(10,2) DEFAULT 0";
+				}
+				st.execute(sql);
+				st.close();
+				System.out.println("Columna 'descuento' asegurada en la base de datos.");
+			}
+		} catch (Exception e) {
+		}
 	}
 }

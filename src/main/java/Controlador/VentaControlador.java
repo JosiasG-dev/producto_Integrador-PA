@@ -110,7 +110,7 @@ public class VentaControlador {
 		app.registrarVenta(venta);
 		double cambio = calcularCambio(montoRecibido);
 		TicketDialog ticket = new TicketDialog(app.getVentanaPrincipal().getFrame(), venta, app.getConfig(), cambio,
-				descuento);
+				descuento, montoRecibido);
 		ticket.mostrar();
 		carrito.clear();
 		descuento = 0;

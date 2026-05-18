@@ -47,6 +47,7 @@ IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='ventas' AND xtype='U')
 CREATE TABLE ventas (
     id          INT IDENTITY(1,1) PRIMARY KEY,
     total       DECIMAL(10,2) NOT NULL,
+    descuento   DECIMAL(10,2) DEFAULT 0,
     metodo_pago VARCHAR(30)   NOT NULL DEFAULT 'Efectivo',
     fecha       DATETIME      NOT NULL DEFAULT GETDATE(),
     cajero      VARCHAR(100)  NOT NULL
