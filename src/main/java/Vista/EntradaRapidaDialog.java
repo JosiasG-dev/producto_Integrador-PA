@@ -66,6 +66,7 @@ public class EntradaRapidaDialog extends JDialog {
 				}
 				producto.setStock(producto.getStock() + cantidad);
 				ctrl.guardarProducto(producto);
+				ctrl.getApp().registrarRetiro("ingreso directo " + producto.getNombre(), cantidad * producto.getPrecio());
 				JOptionPane.showMessageDialog(this, "Inventario actualizado exitosamente");
 				dispose();
 			} catch (NumberFormatException ex) {

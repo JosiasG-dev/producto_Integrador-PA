@@ -65,7 +65,7 @@ public class TicketDialog extends JDialog {
 		y += 14;
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		panelTicket.add(centrado(sdf.format(new java.util.Date()), Estilos.FUENTE_XS, y));
+		panelTicket.add(centrado(sdf.format(venta.getFecha()), Estilos.FUENTE_XS, y));
 		y += 16;
 		panelTicket.add(centrado("Cajero: " + venta.getCajero().toUpperCase(), Estilos.FUENTE_XS, y));
 		y += 16;

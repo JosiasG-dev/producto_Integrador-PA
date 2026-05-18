@@ -14,6 +14,10 @@ public class InventarioControlador {
 		this.app = app;
 	}
 
+	public ControladorPrincipal getApp() {
+		return app;
+	}
+
 	public void setPanel(InventarioPanel panel) {
 		this.panel = panel;
 	}
