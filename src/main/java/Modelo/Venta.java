@@ -11,6 +11,8 @@ public class Venta {
 	private String metodoPago;
 	private Date fecha;
 	private String cajero;
+	private double efectivoRecibido;
+	private double cambio;
 
 	public Venta(int id, List<ItemCarrito> items, double total, String metodoPago, Date fecha, String cajero) {
 		this.id = id;
@@ -94,5 +96,20 @@ public class Venta {
 
 	public int getTotalItems() {
 		return items.size();
+	}
+	public double getEfectivoRecibido() {
+	    return efectivoRecibido;
+	}
+
+	public void setEfectivoRecibido(double efectivoRecibido) {
+	    this.efectivoRecibido = efectivoRecibido;
+	}
+
+	public double getCambio() {
+	    return cambio;
+	}
+
+	public void setCambio(double cambio) {
+	    this.cambio = cambio;
 	}
 }

@@ -11,7 +11,7 @@ public class VentaBD {
 
 	public boolean insertar(Venta venta) {
 		Connection conn = Conexion.getConexion();
-		String sqlVenta = "INSERT INTO ventas (total, descuento, metodo_pago, fecha, cajero) VALUES (?,?,?,?,?)";
+		String sqlVenta = "INSERT INTO ventas (total, descuento, metodo_pago, fecha, cajero, efectivo_recibido, cambio) VALUES (?,?,?,?,?,?,?)";
 		String sqlItem = "INSERT INTO venta_items (venta_id, producto_id, cantidad, precio_unit) VALUES (?,?,?,?)";
 		try {
 			conn.setAutoCommit(false);
@@ -22,7 +22,8 @@ public class VentaBD {
 			psVenta.setString(3, venta.getMetodoPago());
 			psVenta.setTimestamp(4, new Timestamp(venta.getFecha().getTime()));
 			psVenta.setString(5, venta.getCajero());
-			psVenta.executeUpdate();
+			psVenta.setDouble(6, venta.getEfectivoRecibido());
+			psVenta.setDouble(7, venta.getCambio());
 
 			ResultSet keys = psVenta.getGeneratedKeys();
 			if (!keys.next())
@@ -73,8 +74,10 @@ public class VentaBD {
 				ResultSet rs = st.executeQuery("SELECT * FROM ventas ORDER BY fecha DESC")) {
 			while (rs.next()) {
 				Venta v = new Venta(rs.getInt("id"), obtenerItems(rs.getInt("id")), rs.getDouble("total"),
-						rs.getDouble("descuento"), rs.getString("metodo_pago"), rs.getTimestamp("fecha"),
-						rs.getString("cajero"));
+				        rs.getDouble("descuento"), rs.getString("metodo_pago"), rs.getTimestamp("fecha"),
+				        rs.getString("cajero"));
+				v.setEfectivoRecibido(rs.getDouble("efectivo_recibido"));
+				v.setCambio(rs.getDouble("cambio"));
 				lista.add(v);
 			}
 		} catch (SQLException e) {
