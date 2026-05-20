@@ -1,0 +1,27 @@
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userossc
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Re]leases/
+x64/
+x86/
+[Aa]rm/
+[Aa]rm64/
+binstmp/
+bin/
+obj/
+
+# Visual Studio Cache and settings
+.vs/
+Minidumps/
+
+# MAUI / Xamarin
+Generated Files/
+.xamarin/
