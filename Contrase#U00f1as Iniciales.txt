@@ -1,0 +1,3 @@
+UsuarioAdmin + contraseña= admin + admin123
+UsuarioCajero + contraseña= cajero1 + caja123
+tu puedes poner mas cajeros o mas admin eso depende de ti y no olvides guardar las contraseñas para que no se te olviden ;)

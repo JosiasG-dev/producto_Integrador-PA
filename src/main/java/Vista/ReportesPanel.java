@@ -19,6 +19,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
+import Util.JasperReport;
+
 
 public class ReportesPanel extends JPanel {
 
@@ -82,8 +84,15 @@ public class ReportesPanel extends JPanel {
 		btnExcel.addActionListener(e -> exportarExcel());
 		add(btnExcel);
 
+		JButton btnPdf = Estilos.botonSecundario("Exportar PDF");
+		btnPdf.setBounds(804, 74, 110, 34);
+		btnPdf.setBackground(new Color(220, 38, 38));
+		btnPdf.setForeground(Color.WHITE);
+		btnPdf.addActionListener(e -> exportarPdf());
+		add(btnPdf);
+
 		JButton btnDevolucion = Estilos.botonPeligro("Devolucion");
-		btnDevolucion.setBounds(804, 74, 110, 34);
+		btnDevolucion.setBounds(924, 74, 110, 34);
 		btnDevolucion.addActionListener(e -> {
 			DevolucionDialog dlg = new DevolucionDialog(
 					(JFrame) SwingUtilities.getWindowAncestor(this), app);
@@ -92,17 +101,17 @@ public class ReportesPanel extends JPanel {
 		add(btnDevolucion);
 
 		JButton btnVerDevoluciones = Estilos.botonSecundario("Ver Devoluciones");
-		btnVerDevoluciones.setBounds(924, 74, 148, 34);
+		btnVerDevoluciones.setBounds(1044, 74, 148, 34);
 		btnVerDevoluciones.addActionListener(e -> mostrarDevoluciones());
 		add(btnVerDevoluciones);
 
 		JButton btnReimprimir = Estilos.botonSecundario("Reimprimir Ticket");
-		btnReimprimir.setBounds(1082, 74, 148, 34);
+		btnReimprimir.setBounds(1202, 74, 148, 34);
 		btnReimprimir.addActionListener(e -> reimprimirSeleccionado());
 		add(btnReimprimir);
 
 		JButton btnPorProducto = Estilos.botonSecundario("Ventas por Producto");
-		btnPorProducto.setBounds(1240, 74, 180, 34);
+		btnPorProducto.setBounds(1360, 74, 180, 34);
 		btnPorProducto.addActionListener(e -> mostrarVentasPorProducto());
 		add(btnPorProducto);
 
@@ -438,6 +447,67 @@ public class ReportesPanel extends JPanel {
 		dlg.add(btnCerrar);
 
 		dlg.setVisible(true);
+	}
+
+	private void exportarPdf() {
+		if (ventasFiltradas.isEmpty()) {
+			ManejoErrores.advertencia(this, "Sin datos",
+					"No hay ventas en el período seleccionado para exportar.");
+			return;
+		}
+
+		JFileChooser fc = new JFileChooser();
+		fc.setSelectedFile(new File("ReporteVentas.pdf"));
+		fc.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Archivo PDF (*.pdf)", "pdf"));
+		if (fc.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) return;
+
+		File destino = fc.getSelectedFile();
+		// Asegurar extensión .pdf
+		if (!destino.getName().toLowerCase().endsWith(".pdf")) {
+			destino = new File(destino.getAbsolutePath() + ".pdf");
+		}
+		final File archivoFinal = destino;
+
+		// Generar en hilo secundario para no bloquear la UI
+		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+		SwingWorker<File, Void> worker = new SwingWorker<>() {
+			@Override
+			protected File doInBackground() throws Exception {
+				return JasperReport.generarReporteVentas(
+						ventasFiltradas,
+						app.getConfig(),
+						txtFechaInicio.getText().trim(),
+						txtFechaFin.getText().trim()
+				);
+			}
+
+			@Override
+			protected void done() {
+				setCursor(Cursor.getDefaultCursor());
+				try {
+					File temporal = get();
+					// Copiar del temporal al destino elegido por el usuario
+					try (InputStream in   = new java.io.FileInputStream(temporal);
+					     OutputStream out = new java.io.FileOutputStream(archivoFinal)) {
+						in.transferTo(out);
+					}
+					ManejoErrores.registrarInfo("PDF exportado: " + archivoFinal.getAbsolutePath()
+							+ " (" + ventasFiltradas.size() + " ventas)");
+
+					// Abrir el PDF automáticamente si el sistema lo permite
+					if (Desktop.isDesktopSupported()) {
+						Desktop.getDesktop().open(archivoFinal);
+					} else {
+						ManejoErrores.info(ReportesPanel.this, "PDF generado",
+								"Reporte guardado en:\n" + archivoFinal.getAbsolutePath());
+					}
+				} catch (Exception ex) {
+					ManejoErrores.error(ReportesPanel.this, "Error al exportar PDF",
+							"No se pudo generar el reporte PDF.", ex);
+				}
+			}
+		};
+		worker.execute();
 	}
 
 	private JTextField campo(int x, int y, int w, int h) {
