@@ -11,7 +11,7 @@ public class VentaBD {
 
 	public boolean insertar(Venta venta) {
 		Connection conn = Conexion.getConexion();
-		String sqlVenta = "INSERT INTO ventas (total, descuento, metodo_pago, fecha, cajero) VALUES (?,?,?,?,?)";
+		String sqlVenta = "INSERT INTO ventas (total, descuento, metodo_pago, fecha, cajero, efectivo_recibido, cambio) VALUES (?,?,?,?,?,?,?)";
 		String sqlItem = "INSERT INTO venta_items (venta_id, producto_id, cantidad, precio_unit) VALUES (?,?,?,?)";
 		try {
 			conn.setAutoCommit(false);
@@ -22,8 +22,11 @@ public class VentaBD {
 			psVenta.setString(3, venta.getMetodoPago());
 			psVenta.setTimestamp(4, new Timestamp(venta.getFecha().getTime()));
 			psVenta.setString(5, venta.getCajero());
+			psVenta.setDouble(6, venta.getEfectivoRecibido());
+			psVenta.setDouble(7, venta.getCambio());
+			
 			psVenta.executeUpdate();
-
+			
 			ResultSet keys = psVenta.getGeneratedKeys();
 			if (!keys.next())
 				throw new SQLException("No se genero ID para la venta");
@@ -73,8 +76,10 @@ public class VentaBD {
 				ResultSet rs = st.executeQuery("SELECT * FROM ventas ORDER BY fecha DESC")) {
 			while (rs.next()) {
 				Venta v = new Venta(rs.getInt("id"), obtenerItems(rs.getInt("id")), rs.getDouble("total"),
-						rs.getDouble("descuento"), rs.getString("metodo_pago"), rs.getTimestamp("fecha"),
-						rs.getString("cajero"));
+				        rs.getDouble("descuento"), rs.getString("metodo_pago"), rs.getTimestamp("fecha"),
+				        rs.getString("cajero"));
+				v.setEfectivoRecibido(rs.getDouble("efectivo_recibido"));
+				v.setCambio(rs.getDouble("cambio"));
 				lista.add(v);
 			}
 		} catch (SQLException e) {
@@ -84,20 +89,29 @@ public class VentaBD {
 	}
 
 	private List<ItemCarrito> obtenerItems(int ventaId) {
-		List<ItemCarrito> items = new ArrayList<>();
-		String sql = "SELECT vi.*, p.nombre, p.precio, p.categoria, p.unidad "
-				+ "FROM venta_items vi JOIN productos p ON vi.producto_id = p.id WHERE vi.venta_id = ?";
-		try (PreparedStatement ps = Conexion.getConexion().prepareStatement(sql)) {
-			ps.setInt(1, ventaId);
-			ResultSet rs = ps.executeQuery();
-			while (rs.next()) {
-				Producto p = new Producto(rs.getString("producto_id"), rs.getString("nombre"),
-						rs.getDouble("precio_unit"), 0, rs.getString("categoria"), rs.getString("unidad"), "");
-				items.add(new ItemCarrito(p, rs.getDouble("cantidad")));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return items;
+	    List<ItemCarrito> items = new ArrayList<>();
+	    String sql = "SELECT vi.producto_id AS prod_id, vi.cantidad, vi.precio_unit, "
+	               + "p.nombre, p.categoria, p.unidad "
+	               + "FROM venta_items vi "
+	               + "JOIN productos p ON vi.producto_id = p.id "
+	               + "WHERE vi.venta_id = ?";
+	    try (PreparedStatement ps = Conexion.getConexion().prepareStatement(sql)) {
+	        ps.setInt(1, ventaId);
+	        ResultSet rs = ps.executeQuery();
+	        while (rs.next()) {
+	            Producto p = new Producto(
+	                    rs.getString("prod_id"),
+	                    rs.getString("nombre"),
+	                    rs.getDouble("precio_unit"),
+	                    0,
+	                    rs.getString("categoria"),
+	                    rs.getString("unidad"),
+	                    "");
+	            items.add(new ItemCarrito(p, rs.getDouble("cantidad")));
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return items;
 	}
 }

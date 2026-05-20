@@ -59,7 +59,7 @@ public class VentaControlador {
 	public void setCantidad(String productoId, double nuevaCantidad) {
 		for (ItemCarrito item : carrito) {
 			if (item.getProducto().getId().equals(productoId)) {
-					nuevaCantidad = Math.round(nuevaCantidad);
+				nuevaCantidad = Math.round(nuevaCantidad);
 				if (nuevaCantidad > item.getProducto().getStock()) {
 					javax.swing.JOptionPane.showMessageDialog(null,
 							"Stock insuficiente. Disponible: " + (int) item.getProducto().getStock(), "Sin stock",
@@ -107,8 +107,10 @@ public class VentaControlador {
 		}
 		Venta venta = new Venta(0, new ArrayList<>(carrito), total, descuento, metodoPago, new Date(),
 				app.getUsuarioActivo().getNombre());
-		app.registrarVenta(venta);
 		double cambio = calcularCambio(montoRecibido);
+		venta.setEfectivoRecibido(montoRecibido);
+		venta.setCambio(cambio);
+		app.registrarVenta(venta);
 		TicketDialog ticket = new TicketDialog(app.getVentanaPrincipal().getFrame(), venta, app.getConfig(), cambio,
 				descuento, montoRecibido);
 		ticket.mostrar();

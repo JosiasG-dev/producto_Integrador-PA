@@ -75,20 +75,19 @@ public class ControladorPrincipal {
 	}
 
 	public void registrarVenta(Venta venta) {
-		ventaBD.insertar(venta);
+	    ventaBD.insertar(venta);
 
-		if (venta.getMetodoPago().equalsIgnoreCase("Efectivo")) {
-			this.montoCaja += venta.getTotal();
-		}
+	    if (venta.getMetodoPago().equalsIgnoreCase("Efectivo")) {
+	        this.montoCaja += venta.getTotal();
+	    }
 
-		movimientoBD.insertar(
-				new Movimiento(Movimiento.Tipo.VENTA, "venta #" + venta.getId() + " (" + venta.getMetodoPago() + ")",
-						venta.getTotal(), new java.util.Date(), usuarioActivo.getNombre()));
+	    movimientoBD.insertar(
+	            new Movimiento(Movimiento.Tipo.VENTA, "venta #" + venta.getId() + " (" + venta.getMetodoPago() + ")",
+	                    venta.getTotal(), new java.util.Date(), usuarioActivo.getNombre()));
 
-		if (ventanaPrincipal != null) {
-			ventanaPrincipal.refrescarCaja();
-			ventanaPrincipal.refrescarInventario();
-		}
+	    if (ventanaPrincipal != null) {
+	        ventanaPrincipal.refrescarCaja();
+	    }
 	}
 
 	public void registrarDevolucion(Devolucion d) {
