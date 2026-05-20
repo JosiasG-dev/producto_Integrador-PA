@@ -1,0 +1,33 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+ENV/
+env/
+.env
+.venv
+env.bak/
+venv.bak/
+
+# IDE and Editor files
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.userossc
+*.sln
+*.docstates
+
+# Database and logs
+*.log
+*.sqlite3
+*.sqlite3-journal
+
+# OS files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
